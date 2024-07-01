@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, ImageBackground, Image, Button, TextInput } from 'react-native'
 import Modal from "react-native-modal";
 import { ScrollView } from 'react-native-gesture-handler';
+import NumericInput from 'react-native-numeric-input'
 import React, { useState } from 'react'
 
 import ColorPicker, { Panel1, Panel5, Swatches, Preview, OpacitySlider, HueSlider } from 'reanimated-color-picker';
@@ -41,6 +42,14 @@ const ControlScreen = () => {
     setColorThree(hex);
     console.log(hex);
   };
+
+  const addKgOne = () => {
+    setKgOne(prevKgOne => prevKgOne + 1);
+  }
+
+  const minusKgOne = () => {
+    setKgOne(kgOne - 1);
+  }
 
   
 
@@ -195,27 +204,12 @@ const ControlScreen = () => {
             <Modal isVisible={showModalKgOne}>
               <View className="w-96 bg-slate-100 flex justify-center items-center rounded-lg">
                 <View className="flex flex-row gap-3 my-5">
-                  <TouchableOpacity className="w-10 h-10 rounded-full border-2 flex justify-center items-center">
-                    <Image
-                      source={require('../assets/minus.png')}
-                      className="w-8 h-8"
-                      resizeMode='contain'
-                    />
-                  </TouchableOpacity>
-                  <TextInput
-                    onChangeText={setKgOne}
+                  <NumericInput 
+                    totalWidth={200}
                     value={kgOne}
-                    className="border-2 px-3 w-48 rounded-full"
-                    placeholder="Number"
-                    keyboardType="numeric"
+                    onChange={value => setKgOne(value)}
+                    minValue={1}
                   />
-                  <TouchableOpacity className="w-10 h-10 rounded-full border-2 flex justify-center items-center">
-                    <Image
-                      source={require('../assets/plus.png')}
-                      className="w-8 h-8"
-                      resizeMode='contain'
-                    />
-                  </TouchableOpacity>
                 </View>
                 <TouchableOpacity className="bg-green-500 py-3 px-8 my-5 rounded-full" onPress={() => setShowModalKgOne(false)}>
                   <Text className="text-white">
@@ -229,27 +223,12 @@ const ControlScreen = () => {
             <Modal isVisible={showModalKgTwo}>
               <View className="w-96 bg-slate-100 flex justify-center items-center rounded-lg">
                 <View className="flex flex-row gap-3 my-5">
-                  <TouchableOpacity className="w-10 h-10 rounded-full border-2 flex justify-center items-center">
-                    <Image
-                      source={require('../assets/minus.png')}
-                      className="w-8 h-8"
-                      resizeMode='contain'
-                    />
-                  </TouchableOpacity>
-                  <TextInput
-                    onChangeText={setKgTwo}
+                  <NumericInput 
+                    totalWidth={200}
                     value={kgTwo}
-                    className="border-2 px-3 w-48 rounded-full"
-                    placeholder="Number"
-                    keyboardType="numeric"
+                    onChange={value => setKgTwo(value)}
+                    minValue={1}
                   />
-                  <TouchableOpacity className="w-10 h-10 rounded-full border-2 flex justify-center items-center">
-                    <Image
-                      source={require('../assets/plus.png')}
-                      className="w-8 h-8"
-                      resizeMode='contain'
-                    />
-                  </TouchableOpacity>
                 </View>
                 <TouchableOpacity className="bg-green-500 py-3 px-8 my-5 rounded-full" onPress={() => setShowModalKgTwo(false)}>
                   <Text className="text-white">
@@ -263,27 +242,12 @@ const ControlScreen = () => {
             <Modal isVisible={showModalKgThree}>
               <View className="w-96 bg-slate-100 flex justify-center items-center rounded-lg">
                 <View className="flex flex-row gap-3 my-5">
-                  <TouchableOpacity className="w-10 h-10 rounded-full border-2 flex justify-center items-center">
-                    <Image
-                      source={require('../assets/minus.png')}
-                      className="w-8 h-8"
-                      resizeMode='contain'
-                    />
-                  </TouchableOpacity>
-                  <TextInput
-                    onChangeText={setKgThree}
+                  <NumericInput 
+                    totalWidth={200}
                     value={kgThree}
-                    className="border-2 px-3 w-48 rounded-full"
-                    placeholder="Number"
-                    keyboardType="numeric"
+                    onChange={value => setKgThree(value)}
+                    minValue={1}
                   />
-                  <TouchableOpacity className="w-10 h-10 rounded-full border-2 flex justify-center items-center">
-                    <Image
-                      source={require('../assets/plus.png')}
-                      className="w-8 h-8"
-                      resizeMode='contain'
-                    />
-                  </TouchableOpacity>
                 </View>
                 <TouchableOpacity className="bg-green-500 py-3 px-8 my-5 rounded-full" onPress={() => setShowModalKgThree(false)}>
                   <Text className="text-white">
