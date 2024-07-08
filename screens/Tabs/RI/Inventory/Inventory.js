@@ -86,7 +86,7 @@ const Inventory = () => {
             list.push({ id: doc.id, ...doc.data() });
           });
           setDispatchList(list);
-          console.log(dispatchList.length);
+          // console.log(dispatchList.length);
           setLoadingList(false);
         });
 
@@ -333,57 +333,71 @@ const Inventory = () => {
 
         ))}
       </ScrollView> */}
-      <FlatList
-        data={dispatchList}
-        renderItem={({item}) => 
-          <View key={item.id} className="px-3 rounded-lg">
-            <View className="flex flex-row justify-between bg-white shadow-md px-3 py-3 rounded-lg mb-5">
-              <View className="flex flex-col justify-center items-center border-r-[1px] pr-3">
-                {item.crop === 'Tomato' && (
-                  <Image
-                    source={require('../../../../assets/tomato.png')}
-                    style={{ width: 40, height: 40 }}
-                    resizeMode='contain'
-                  />
-                )}
-                {item.crop === 'Cucumber' && (
-                  <Image
-                    source={require('../../../../assets/cucumber.png')}
-                    style={{ width: 40, height: 40 }}
-                    resizeMode='contain'
-                  />
-                )}
-                {item.crop === 'Chili' && (
-                  <Image
-                    source={require('../../../../assets/chili.png')}
-                    style={{ width: 40, height: 40 }}
-                    resizeMode='contain'
-                  />
-                )}
-                <Text className="font-bold">{item.crop}</Text>
-              </View>
-              <View className="flex flex-col border-r-[1px] pr-3">
-                <Text className="font-bold">Quantity</Text>
-                <View className="flex flex-row justify-center items-center mt-2">
-                  <Text className="font-bold text-xl">{item.bundles}</Text>
-                  <Text className="font-light text-md">/bundles</Text>
+      {
+        loadingList ? (
+          <View className="py-5 flex flex-col justify-center items-center">
+           <ActivityIndicator size="large" color="#1C64F2" />
+           <Text>Fetching...</Text>
+          </View>
+        ) : dispatchList.length === 0 ? (
+          <View className="py-5 flex flex-col justify-center items-center">
+            <Text>No dispatch items found.</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={dispatchList}
+            renderItem={({item}) => 
+              <View key={item.id} className="px-3 rounded-lg">
+                <View className="flex flex-row justify-between bg-white shadow-md px-3 py-3 rounded-lg mb-5">
+                  <View className="flex flex-col justify-center items-center border-r-[1px] pr-3">
+                    {item.crop === 'Tomato' && (
+                      <Image
+                        source={require('../../../../assets/tomato.png')}
+                        style={{ width: 40, height: 40 }}
+                        resizeMode='contain'
+                      />
+                    )}
+                    {item.crop === 'Cucumber' && (
+                      <Image
+                        source={require('../../../../assets/cucumber.png')}
+                        style={{ width: 40, height: 40 }}
+                        resizeMode='contain'
+                      />
+                    )}
+                    {item.crop === 'Chili' && (
+                      <Image
+                        source={require('../../../../assets/chili.png')}
+                        style={{ width: 40, height: 40 }}
+                        resizeMode='contain'
+                      />
+                    )}
+                    <Text className="font-bold">{item.crop}</Text>
+                  </View>
+                  <View className="flex flex-col border-r-[1px] pr-3">
+                    <Text className="font-bold">Quantity</Text>
+                    <View className="flex flex-row justify-center items-center mt-2">
+                      <Text className="font-bold text-xl">{item.bundles}</Text>
+                      <Text className="font-light text-md">/bundles</Text>
+                    </View>
+                  </View>
+                  <View className="flex flex-col border-r-[1px] pr-3">
+                    <Text className="font-bold">Buyer's Name</Text>
+                    <Text className="font-bold text-lg mt-2">{item.buyer_name}</Text>
+                  </View>
+                  <View className="flex flex-col pr-3">
+                    <Text className="font-bold">Price</Text>
+                    <Text className="font-bold text-lg mt-2">₱{item.price}</Text>
+                  </View>
                 </View>
               </View>
-              <View className="flex flex-col border-r-[1px] pr-3">
-                <Text className="font-bold">Buyer's Name</Text>
-                <Text className="font-bold text-lg mt-2">{item.buyer_name}</Text>
-              </View>
-              <View className="flex flex-col pr-3">
-                <Text className="font-bold">Price</Text>
-                <Text className="font-bold text-lg mt-2">₱{item.price}</Text>
-              </View>
-            </View>
-          </View>
-          
-        }
-        keyExtractor={item => item.id}
-        className="max-h-80"
-      />
+              
+            }
+            keyExtractor={item => item.id}
+            className="max-h-80"
+          />
+        )
+      }
+      
     </View>
   )
 }
