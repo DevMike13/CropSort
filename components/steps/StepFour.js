@@ -4,7 +4,7 @@ import React from 'react'
 const StepFour = ({ setStep, navigation }) => {
 
   const handleStepFinish = () => {
-    navigation.navigate('Main')
+    navigation.navigate('Mother')
   };
 
   const handleStepBack = () => {

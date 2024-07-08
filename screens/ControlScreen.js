@@ -52,9 +52,14 @@ const ControlScreen = () => {
     setColorOne('#000000');
     setColorTwo('#000000');
     setColorThree('#000000');
-    setKgOne(1);
-    setKgTwo(1);
-    setKgThree(1);
+
+    firebase.database().ref('colorOne' ).set('#000000');
+    firebase.database().ref('colorTwo' ).set('#000000');
+    firebase.database().ref('colorThree' ).set('#000000');
+    
+    // setKgOne(1);
+    // setKgTwo(1);
+    // setKgThree(1);
   }
 
   // BASKET 1
@@ -126,6 +131,26 @@ const ControlScreen = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const rtdbWeightOne = firebase.database().ref('weightOne');
+    rtdbWeightOne.on('value', (snapshot) => {
+      const newWeightOne = snapshot.val();
+      setKgOne(newWeightOne);
+    });
+
+    const rtdbWeightTwo = firebase.database().ref('weightTwo');
+    rtdbWeightTwo.on('value', (snapshot) => {
+      const newWeightTwo = snapshot.val();
+      setKgTwo(newWeightTwo);
+    });
+
+    const rtdbWeightThree = firebase.database().ref('weightThree');
+    rtdbWeightThree.on('value', (snapshot) => {
+      const newWeightThree = snapshot.val();
+      setKgThree(newWeightThree);
+    });
+  }, []);
+
   const toggleConveyor = () => {
     const newState = converyorState === 'ON' ? 'OFF' : 'ON';
     firebase.database().ref('conveyorState').set(newState);
@@ -172,7 +197,9 @@ const ControlScreen = () => {
                   resizeMode='contain'
                 />
               </TouchableOpacity>
-              <TouchableOpacity className="border-2 w-28 h-10 rounded-lg flex flex-row justify-around items-center" onPress={() => setShowModalKgOne(true)}>
+              <TouchableOpacity className="border-2 w-28 h-10 rounded-lg flex flex-row justify-around items-center" 
+                // onPress={() => setShowModalKgOne(true)}
+              >
                   <Text className="font-bold text-base">
                     {kgOne} KG
                   </Text>
@@ -197,7 +224,9 @@ const ControlScreen = () => {
                   resizeMode='contain'
                 />
               </TouchableOpacity>
-              <TouchableOpacity className="border-2 w-28 h-10 rounded-lg flex flex-row justify-around items-center" onPress={() => setShowModalKgTwo(true)}>
+              <TouchableOpacity className="border-2 w-28 h-10 rounded-lg flex flex-row justify-around items-center" 
+                // onPress={() => setShowModalKgTwo(true)}
+              >
                   <Text className="font-bold text-base">
                     {kgTwo} KG
                   </Text>
@@ -222,7 +251,9 @@ const ControlScreen = () => {
                   resizeMode='contain'
                 />
               </TouchableOpacity>
-              <TouchableOpacity className="border-2 w-28 h-10 rounded-lg flex flex-row justify-around items-center" onPress={() => setShowModalKgThree(true)}>
+              <TouchableOpacity className="border-2 w-28 h-10 rounded-lg flex flex-row justify-around items-center" 
+                // onPress={() => setShowModalKgThree(true)}
+              >
                   <Text className="font-bold text-base">
                     {kgThree} KG
                   </Text>

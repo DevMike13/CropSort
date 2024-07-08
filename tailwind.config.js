@@ -4,7 +4,10 @@ module.exports = {
     "./App.{js,jsx,ts,tsx}", 
     "./navigation/*.{js,jsx,ts,tsx}",
     "./screens/*.{js,jsx,ts,tsx}",
-    "./components/**/*.{js,jsx,ts,tsx}"
+    "./components/**/*.{js,jsx,ts,tsx}",
+    "./screens/Tabs/Home/*.{js,jsx,ts,tsx}",
+    "./screens/Tabs/RI/*.{js,jsx,ts,tsx}",
+     "./screens/Tabs/RI/Inventory/*.{js,jsx,ts,tsx}"
   ],
   theme: {
     extend: {},
