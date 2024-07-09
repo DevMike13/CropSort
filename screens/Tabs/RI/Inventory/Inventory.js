@@ -264,8 +264,8 @@ const Inventory = () => {
           </TouchableOpacity>
         </View>
         {/* MODAL */}
-        <Modal isVisible={showStockModal}>
-          <View className="w-96 h-auto bg-slate-100 flex justify-center items-center rounded-lg">
+        <Modal isVisible={showStockModal} >
+          <View className="h-auto bg-slate-100 flex justify-center items-center rounded-lg">
             <Text className="py-4 font-bold text-lg">Add Stock</Text>
             <View className="w-[90%] mt-5">
               <Text className="font-semibold text-base">
@@ -370,7 +370,7 @@ const Inventory = () => {
       </View>
       {/* MODAL */}
       <Modal isVisible={showAddModal}>
-        <View className="w-96 h-auto bg-slate-100 flex justify-center items-center rounded-lg">
+        <View className="h-auto bg-slate-100 flex justify-center items-center rounded-lg">
           <Text className="py-4 font-bold text-lg">Create New Batch</Text>
           <View className="w-[90%]">
             <Text className="font-semibold text-base">
@@ -465,57 +465,58 @@ const Inventory = () => {
             <Text>No dispatch items found.</Text>
           </View>
         ) : (
-          <FlatList
-            data={dispatchList}
-            renderItem={({item}) => 
-              <View key={item.id} className="px-3 rounded-lg">
-                <View className="flex flex-row justify-between bg-white shadow-md px-3 py-3 rounded-lg mb-5">
-                  <View className="flex flex-col justify-center items-center border-r-[1px] pr-3">
-                    {item.crop === 'Tomato' && (
-                      <Image
-                        source={require('../../../../assets/tomato.png')}
-                        style={{ width: 40, height: 40 }}
-                        resizeMode='contain'
-                      />
-                    )}
-                    {item.crop === 'Cucumber' && (
-                      <Image
-                        source={require('../../../../assets/cucumber.png')}
-                        style={{ width: 40, height: 40 }}
-                        resizeMode='contain'
-                      />
-                    )}
-                    {item.crop === 'Chili' && (
-                      <Image
-                        source={require('../../../../assets/chili.png')}
-                        style={{ width: 40, height: 40 }}
-                        resizeMode='contain'
-                      />
-                    )}
-                    <Text className="font-bold">{item.crop}</Text>
-                  </View>
-                  <View className="flex flex-col border-r-[1px] pr-3">
-                    <Text className="font-bold">Quantity</Text>
-                    <View className="flex flex-row justify-center items-center mt-2">
-                      <Text className="font-bold text-xl">{item.bundles}</Text>
-                      <Text className="font-light text-md">/bundles</Text>
+          <View style={{ height: '50%', marginBottom: 60}}>
+            <FlatList
+              data={dispatchList}
+              renderItem={({item, index}) => 
+                <View key={item.id} className="px-3 rounded-lg" style={{ paddingBottom: index === dispatchList.length - 1 ? 60 : 0}}>
+                  <View className="flex flex-row justify-between bg-white shadow-md px-3 py-3 rounded-lg mb-5">
+                    <View className="flex flex-col justify-center items-center border-r-[1px] pr-3">
+                      {item.crop === 'Tomato' && (
+                        <Image
+                          source={require('../../../../assets/tomato.png')}
+                          style={{ width: 40, height: 40 }}
+                          resizeMode='contain'
+                        />
+                      )}
+                      {item.crop === 'Cucumber' && (
+                        <Image
+                          source={require('../../../../assets/cucumber.png')}
+                          style={{ width: 40, height: 40 }}
+                          resizeMode='contain'
+                        />
+                      )}
+                      {item.crop === 'Chili' && (
+                        <Image
+                          source={require('../../../../assets/chili.png')}
+                          style={{ width: 40, height: 40 }}
+                          resizeMode='contain'
+                        />
+                      )}
+                      <Text className="font-bold">{item.crop}</Text>
+                    </View>
+                    <View className="flex flex-col border-r-[1px] pr-3">
+                      <Text className="font-bold">Quantity</Text>
+                      <View className="flex flex-row justify-center items-center mt-2">
+                        <Text className="font-bold text-xl">{item.bundles}</Text>
+                        <Text className="font-light text-md">/bundles</Text>
+                      </View>
+                    </View>
+                    <View className="flex flex-col border-r-[1px] pr-3">
+                      <Text className="font-bold">Buyer's Name</Text>
+                      <Text className="font-bold text-lg mt-2">{item.buyer_name}</Text>
+                    </View>
+                    <View className="flex flex-col pr-3">
+                      <Text className="font-bold">Price</Text>
+                      <Text className="font-bold text-lg mt-2">₱{item.price}</Text>
                     </View>
                   </View>
-                  <View className="flex flex-col border-r-[1px] pr-3">
-                    <Text className="font-bold">Buyer's Name</Text>
-                    <Text className="font-bold text-lg mt-2">{item.buyer_name}</Text>
-                  </View>
-                  <View className="flex flex-col pr-3">
-                    <Text className="font-bold">Price</Text>
-                    <Text className="font-bold text-lg mt-2">₱{item.price}</Text>
-                  </View>
                 </View>
-              </View>
-              
-            }
-            keyExtractor={item => item.id}
-            className="max-h-[360px]"
-          />
+              }
+              keyExtractor={item => item.id}
+            />
+          </View>
+          
         )
       }
       <Toast />

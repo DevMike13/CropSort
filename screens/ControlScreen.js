@@ -267,7 +267,7 @@ const ControlScreen = () => {
 
             {/* MODAL 1 */}
             <Modal isVisible={showModalOne}>
-              <View className="w-96 bg-slate-100 flex justify-center items-center rounded-lg">
+              <View className="bg-slate-100 flex justify-center items-center rounded-lg">
                 <ColorPicker style={{ width: '70%' }} value='red' onComplete={onSelectColorOne}>
                   <View className="py-5">
                     <Preview hideInitialColor colorFormat='rgb' />
@@ -290,7 +290,7 @@ const ControlScreen = () => {
 
             {/* MODAL 2 */}
             <Modal isVisible={showModalTwo}>
-              <View className="w-96 bg-slate-100 flex justify-center items-center rounded-lg">
+              <View className="bg-slate-100 flex justify-center items-center rounded-lg">
                 <ColorPicker style={{ width: '70%' }} value='red' onComplete={onSelectColorTwo}>
                   <View className="py-5">
                     <Preview hideInitialColor colorFormat='rgb' />
@@ -314,7 +314,7 @@ const ControlScreen = () => {
 
             {/* MODAL 3 */}
             <Modal isVisible={showModalThree}>
-              <View className="w-96 bg-slate-100 flex justify-center items-center rounded-lg">
+              <View className="bg-slate-100 flex justify-center items-center rounded-lg">
                 <ColorPicker style={{ width: '70%' }} value='red' onComplete={onSelectColorThree}>
                   <View className="py-5">
                     <Preview hideInitialColor colorFormat='rgb' />
@@ -388,7 +388,7 @@ const ControlScreen = () => {
 
             {/* KILO MODAL 3 */}
             <Modal isVisible={showModalKgThree}>
-              <View className="w-96 bg-slate-100 flex justify-center items-center rounded-lg">
+              <View className="bg-slate-100 flex justify-center items-center rounded-lg">
                 <View className="flex flex-row gap-3 my-5">
                   <NumericInput 
                     totalWidth={200}
@@ -411,7 +411,7 @@ const ControlScreen = () => {
             </Modal>
 
             <Modal isVisible={converyorState == "ON" ? true : false}>
-              <View className="w-96 bg-[#f8fafc] flex justify-center items-center rounded-lg">
+              <View className="bg-[#f8fafc] flex justify-center items-center rounded-lg">
                 <LottieView
                   autoPlay
                   style={{
