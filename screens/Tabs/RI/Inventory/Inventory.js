@@ -5,7 +5,8 @@ import firebase from '../../../../firebase';
 import Modal from "react-native-modal";
 import { SelectList } from 'react-native-dropdown-select-list';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
-import NumericInput from 'react-native-numeric-input'
+import NumericInput from 'react-native-numeric-input';
+import Toast from 'react-native-toast-message';
 
 import styles from './inventory.style';
 
@@ -25,6 +26,8 @@ const Inventory = () => {
 
   const [storeName, setStoreName] = useState('');
   const [price, setPrice] = useState(0);
+
+  const [showStockModal, setShowStockModal] = useState(false);
 
   const handleInputChange = (text) => {
     setStoreName(text);
@@ -104,20 +107,71 @@ const Inventory = () => {
     try {
       // Validate input fields (if needed)
       if (!quantity || !storeName || !selected || !selectedDate || !price) {
-        console.log('Fill all the fields')
+        console.log('Fill all the fields');
+        Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: 'Error!',
+          text2: 'Fill all the fields',
+          visibilityTime: 3000,
+        });
         return;
       }
 
       // Convert orderDate to Firestore timestamp
       const timestamp = firebase.firestore.Timestamp.fromDate(selectedDate);
 
-      // Add data to Firestore collection
-      await firebase.firestore().collection('dispatch_list').add({
-        bundles: parseInt(quantity, 10),
-        buyer_name: storeName,
-        crop: selected,
-        order_date: timestamp,
-        price: parseInt(price, 10),
+      const stockDocumentRef = firebase.firestore().collection('stock').doc('stocks');
+
+      await firebase.firestore().runTransaction(async (transaction) => {
+        const stockDoc = await transaction.get(stockDocumentRef);
+        if (!stockDoc.exists) {
+          // throw new Error("Stock document does not exist!");
+          Toast.show({
+            type: 'error',
+            position: 'top',
+            text1: 'Error!',
+            text2: 'Stock document does not exist!',
+            visibilityTime: 3000,
+          });
+          return;
+        }
+  
+        // Get current stock value
+        const currentStock = stockDoc.data()[selected.toLowerCase()];
+        if (currentStock < quantity) {
+          // throw new Error(`Insufficient stock for ${selected}`);
+          Toast.show({
+            type: 'error',
+            position: 'top',
+            text1: 'Error!',
+            text2: `Insufficient stock for ${selected}`,
+            visibilityTime: 3000,
+          });
+
+          return;
+        }
+  
+        // Decrement stock value
+        const newStock = currentStock - quantity;
+        transaction.update(stockDocumentRef, { [selected.toLowerCase()]: newStock });
+  
+        // Add data to Firestore collection
+        await firebase.firestore().collection('dispatch_list').add({
+          bundles: parseInt(quantity, 10),
+          buyer_name: storeName,
+          crop: selected,
+          order_date: timestamp,
+          price: parseInt(price, 10),
+        });
+        Toast.show({
+          type: 'success',
+          position: 'top',
+          text1: 'Success!',
+          text2: 'Dispatch added successfully.',
+          visibilityTime: 3000,
+        });
+        console.log('Dispatch added successfully.');
       });
 
       // Clear input fields after successful addition
@@ -126,17 +180,185 @@ const Inventory = () => {
       setSelected('');
       setSelectedDate(new Date()); // Reset orderDate to current date/time
       setPrice('');
-
-      // Alert.alert('Success', 'Dispatch added successfully.');
-      console.log('Dispatch added successfully.');
     } catch (error) {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Error!',
+        text2: `Error adding dispatch: ${error}`,
+        visibilityTime: 3000,
+      });
       console.error('Error adding dispatch:', error);
+    }
+  };
+
+  const handleAddStock = async () => {
+    try {
+      // Validate input fields (if needed)
+      if (!quantity || !selected) {
+        console.log('Fill all the fields');
+        Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: 'Error!',
+          text2: 'Fill all the fields',
+          visibilityTime: 3000,
+        });
+        return;
+      }
+
+      const stockDocumentRef = firebase.firestore().collection('stock').doc('stocks');
+
+      // Run transaction
+      await firebase.firestore().runTransaction(async (transaction) => {
+        const stockDoc = await transaction.get(stockDocumentRef);
+        if (!stockDoc.exists) {
+          throw new Error("Stock document does not exist!");
+        }
+
+        // Get current stock value
+        const currentStock = stockDoc.data()[selected.toLowerCase()];
+
+        // Increment stock value
+        const newStock = currentStock + quantity;
+        transaction.update(stockDocumentRef, { [selected.toLowerCase()]: newStock });
+      });
+
+      // Clear input fields after successful addition
+      setQuantity(1);
+      setSelected('');
+
+      // Alert or console log success
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'Success!',
+        text2: 'Stock added successfully.',
+        visibilityTime: 3000,
+      });
+      console.log('Stock added successfully.');
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Error!',
+        text2: `Error adding stock: ${error}`,
+        visibilityTime: 3000,
+      });
+      console.error('Error adding stock:', error);
     }
   };
 
   return (
     <View className="w-full h-auto">
-      <View className="w-full h-auto flex items-center justify-center py-6">
+      <View className="mx-1 px-2">
+        <View className="flex flex-row justify-between items-center my-3">
+          <Text className="text-lg font-semibold">Total Stock: </Text>
+          <TouchableOpacity className="flex flex-row bg-green-500 px-2 py-1 rounded-lg" onPress={() => setShowStockModal(true)}>
+            <Ionicons 
+              name='add'
+              color='white'
+              size={18}
+            />
+            <Text className="text-white">Add Stock</Text>
+          </TouchableOpacity>
+        </View>
+        {/* MODAL */}
+        <Modal isVisible={showStockModal}>
+          <View className="w-96 h-auto bg-slate-100 flex justify-center items-center rounded-lg">
+            <Text className="py-4 font-bold text-lg">Add Stock</Text>
+            <View className="w-[90%] mt-5">
+              <Text className="font-semibold text-base">
+                Select Crop
+              </Text>
+              <SelectList
+                setSelected={(val) => setSelected(val)} 
+                data={crops} 
+                search={false}
+                save="value"
+                placeholder='Ex: Tomato'
+              />
+            </View>
+            <View className="w-[90%] mt-5 flex flex-row items-center">
+              <Text className="font-semibold text-base mr-8">
+                Quantity :
+              </Text>
+              <NumericInput 
+                totalWidth={200}
+                value={quantity}
+                onChange={value => setQuantity(value)}
+                minValue={1}
+                totalHeight={50} 
+              />
+            </View>
+            
+            
+            <View className="w-full mt-8 mb-5 flex flex-row justify-around">
+              <TouchableOpacity className="py-3 px-8 bg-gray-200 rounded-md" onPress={() => {setShowStockModal(false)}}>
+                <Text>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity className="py-3 px-9 bg-green-600 rounded-md" onPress={() => {
+                handleAddStock(),
+                setShowStockModal(false)
+                }}>
+                <Text className="text-white">Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+        {/* MODAL END */}
+        {loading ? (
+          <View className="py-5 flex flex-col justify-center items-center">
+           <ActivityIndicator size="large" color="#1C64F2" />
+           <Text>Fetching...</Text>
+          </View>
+        ) : (
+          <View className="w-full flex flex-row items-center justify-between">
+            <View className="flex flex-col items-center border border-gray-400 border-dashed px-5 py-3">
+              <Image
+                source={require('../../../../assets/tomato.png')}
+                className="w-12 h-12"
+                resizeMode='contain'
+              />
+              <Text className="font-medium -mt-2">Tomato</Text>
+              <View className="flex flex-row justify-center items-center h-auto mt-2">
+                <Text className="font-bold text-2xl">{stocks.tomato}</Text>
+                <Text className="font-light text-sm">/bundles</Text>
+              </View>
+            </View>
+            
+            <View className="flex flex-col items-center border border-gray-400 border-dashed px-5 py-3">
+              <Image
+                source={require('../../../../assets/cucumber.png')}
+                className="w-12 h-12"
+                resizeMode='contain'
+              />
+              <Text className="font-medium -mt-2">Cucumber</Text>
+              <View className="flex flex-row justify-center items-center h-auto mt-2">
+                <Text className="font-bold text-2xl">{stocks.cucumber}</Text>
+                <Text className="font-light text-sm">/bundles</Text>
+              </View>
+            </View>
+
+            <View className="flex flex-col items-center border border-gray-400 border-dashed px-5 py-3">
+              <Image
+                source={require('../../../../assets/chili.png')}
+                className="w-12 h-12"
+                resizeMode='contain'
+              />
+              <Text className="font-medium -mt-2">Chili</Text>
+              <View className="flex flex-row justify-center items-center h-auto mt-2">
+                <Text className="font-bold text-2xl">{stocks.chili}</Text>
+                <Text className="font-light text-sm">/bundles</Text>
+              </View>
+            </View>
+          </View>
+        )}
+      </View>
+
+      <View className="w-[95%] h-1 bg-gray-300 self-center my-4"/>
+
+      <View className="w-full h-auto flex items-center justify-center mb-4">
         <TouchableOpacity className="bg-green-500 w-1/2 flex flex-row items-center justify-center px-6 py-3 rounded-full" onPress={() => setShowAddModal(true)}>
           <Ionicons 
             name='add'
@@ -230,109 +452,8 @@ const Inventory = () => {
       </Modal>
       {/* MODAL END */}
 
-      <View className="mx-1 px-2">
-        <Text className="text-lg font-semibold">Total Stock: </Text>
-        {loading ? (
-          <View className="py-5 flex flex-col justify-center items-center">
-           <ActivityIndicator size="large" color="#1C64F2" />
-           <Text>Fetching...</Text>
-          </View>
-        ) : (
-          <View className="w-full flex flex-row items-center justify-between">
-            <View className="flex flex-col items-center border border-gray-400 border-dashed px-5 py-3">
-              <Image
-                source={require('../../../../assets/tomato.png')}
-                className="w-12 h-12"
-                resizeMode='contain'
-              />
-              <Text className="font-medium -mt-2">Tomato</Text>
-              <View className="flex flex-row justify-center items-center h-auto mt-2">
-                <Text className="font-bold text-2xl">{stocks.tomato}</Text>
-                <Text className="font-light text-sm">/bundles</Text>
-              </View>
-            </View>
-            
-            <View className="flex flex-col items-center border border-gray-400 border-dashed px-5 py-3">
-              <Image
-                source={require('../../../../assets/cucumber.png')}
-                className="w-12 h-12"
-                resizeMode='contain'
-              />
-              <Text className="font-medium -mt-2">Cucumber</Text>
-              <View className="flex flex-row justify-center items-center h-auto mt-2">
-                <Text className="font-bold text-2xl">{stocks.cucumber}</Text>
-                <Text className="font-light text-sm">/bundles</Text>
-              </View>
-            </View>
-
-            <View className="flex flex-col items-center border border-gray-400 border-dashed px-5 py-3">
-              <Image
-                source={require('../../../../assets/chili.png')}
-                className="w-12 h-12"
-                resizeMode='contain'
-              />
-              <Text className="font-medium -mt-2">Chili</Text>
-              <View className="flex flex-row justify-center items-center h-auto mt-2">
-                <Text className="font-bold text-2xl">{stocks.chili}</Text>
-                <Text className="font-light text-sm">/bundles</Text>
-              </View>
-            </View>
-          </View>
-        )}
-      </View>
-
-      <View className="w-[95%] h-1 bg-gray-300 self-center my-5" />
-
       {/* LIST */}
-      
-      {/* <ScrollView contentContainerStyle={{ paddingBottom: 50 }}>
-        {dispatchList.map((item) => (
-          <View key={item.id} className="px-3 py-3 rounded-lg">
-            <View className="flex flex-row justify-between bg-white shadow-md px-3 py-3 rounded-lg mb-5">
-              <View className="flex flex-col justify-center items-center border-r-[1px] pr-3">
-                {item.crop === 'Tomato' && (
-                  <Image
-                    source={require('../../../../assets/tomato.png')}
-                    style={{ width: 40, height: 40 }}
-                    resizeMode='contain'
-                  />
-                )}
-                {item.crop === 'Cucumber' && (
-                  <Image
-                    source={require('../../../../assets/cucumber.png')}
-                    style={{ width: 40, height: 40 }}
-                    resizeMode='contain'
-                  />
-                )}
-                {item.crop === 'Chili' && (
-                  <Image
-                    source={require('../../../../assets/chili.png')}
-                    style={{ width: 40, height: 40 }}
-                    resizeMode='contain'
-                  />
-                )}
-                <Text className="font-bold">{item.crop}</Text>
-              </View>
-              <View className="flex flex-col border-r-[1px] pr-3">
-                <Text className="font-bold">Quantity</Text>
-                <View className="flex flex-row justify-center items-center mt-2">
-                  <Text className="font-bold text-xl">{item.bundles}</Text>
-                  <Text className="font-light text-md">/bundles</Text>
-                </View>
-              </View>
-              <View className="flex flex-col border-r-[1px] pr-3">
-                <Text className="font-bold">Buyer's Name</Text>
-                <Text className="font-bold text-lg mt-2">{item.buyer_name}</Text>
-              </View>
-              <View className="flex flex-col pr-3">
-                <Text className="font-bold">Price</Text>
-                <Text className="font-bold text-lg mt-2">₱{item.price}</Text>
-              </View>
-            </View>
-          </View>
-
-        ))}
-      </ScrollView> */}
+    
       {
         loadingList ? (
           <View className="py-5 flex flex-col justify-center items-center">
@@ -393,11 +514,11 @@ const Inventory = () => {
               
             }
             keyExtractor={item => item.id}
-            className="max-h-80"
+            className="max-h-[360px]"
           />
         )
       }
-      
+      <Toast />
     </View>
   )
 }

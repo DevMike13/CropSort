@@ -7,7 +7,8 @@ module.exports = {
     "./components/**/*.{js,jsx,ts,tsx}",
     "./screens/Tabs/Home/*.{js,jsx,ts,tsx}",
     "./screens/Tabs/RI/*.{js,jsx,ts,tsx}",
-     "./screens/Tabs/RI/Inventory/*.{js,jsx,ts,tsx}"
+    "./screens/Tabs/RI/Inventory/*.{js,jsx,ts,tsx}",
+    "./screens/Tabs/RI/Sorted/*.{js,jsx,ts,tsx}"
   ],
   theme: {
     extend: {},
