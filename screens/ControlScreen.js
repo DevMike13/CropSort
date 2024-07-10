@@ -75,6 +75,7 @@ const ControlScreen = () => {
     firebase.database().ref('weightThree').set(0);
 
     firebase.database().ref('currentCrop').set('Tomato');
+    setCurrentCrop('Tomato')
   }
 
   // BASKET 1
@@ -136,6 +137,9 @@ const ControlScreen = () => {
       setCurrentCrop(newCurrentCrop);
     });
 
+    return () => {
+      rtdbCurrentCropRef.off('value'); // Detach listener
+    };
   }, []);
 
   useEffect(() => {

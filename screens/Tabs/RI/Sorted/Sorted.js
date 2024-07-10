@@ -1,20 +1,64 @@
-import { View, Text, Dimensions, FlatList, ScrollView } from 'react-native'
-import React from 'react'
+import { View, Text, Dimensions, FlatList, ScrollView, Image } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import { BarChart } from "react-native-chart-kit";
+import { SelectList } from 'react-native-dropdown-select-list';
+import firebase from '../../../../firebase';
 
 const screenWidth = Dimensions.get("window").width;
 
+const fetchBundleData = async () => {
+  try {
+    const snapshot = await firebase.firestore().collection('bundle_collection').get();
+    const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return data;
+  } catch (error) {
+    console.error("Error fetching bundle data:", error);
+    return [];
+  }
+};
+
+const aggregateBundleData = (data) => {
+  const aggregates = {};
+
+  data.forEach(item => {
+    const { color, crop, bundle_count } = item;
+    const key = `${color}_${crop}`;
+
+    if (!aggregates[key]) {
+      aggregates[key] = { color, crop, total_bundle_count: 0 };
+    }
+
+    aggregates[key].total_bundle_count += bundle_count;
+  });
+
+  return Object.values(aggregates);
+};
+
 const Sorted = () => {
-  // const chartConfig = {
-  //   backgroundGradientFrom: "#1E2923",
-  //   backgroundGradientFromOpacity: 0,
-  //   backgroundGradientTo: "#08130D",
-  //   backgroundGradientToOpacity: 0.5,
-  //   color: (opacity = 1) => `white`,
-  //   strokeWidth: 2, // optional, default 3
-  //   barPercentage: 0.5,
-  //   useShadowColorFromDataset: false // optional
-  // };
+
+  const [aggregatedData, setAggregatedData] = useState([]);
+
+  const [filterCrop, setFilterCrop] = useState("Tomato");
+
+  const crops = [
+    {key: '1', value: 'Tomato'},
+    {key: '2', value: 'Cucumber'},
+    {key: '3', value: 'Chili'},
+  ]
+
+  useEffect(() => {
+    const unsubscribe = firebase.firestore().collection('bundle_collection').onSnapshot(snapshot => {
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setAggregatedData(aggregateBundleData(data));
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Function to filter aggregated data based on selected crop
+  const filteredData = aggregatedData.filter(item => {
+    return filterCrop ? item.crop.toLowerCase().includes(filterCrop.toLowerCase()) : true;
+  });
 
   const chartConfig = {
     backgroundColor: '#ffffff',
@@ -25,29 +69,78 @@ const Sorted = () => {
     fillShadowGradientOpacity: 1,
     decimalPlaces: 0,
     color: (opacity = 1) => `rgba(230, 0, 0, ${opacity})`,
-    
+    barRadius: 5,
   };
 
   const data = {
-    labels: ["Tomato", "Cucumber", "Chili"],
+    labels: filteredData.map(item => `${item.color}`),
     datasets: [
       {
-        data: [20, 45, 28]
+        data: filteredData.map(item => item.total_bundle_count),
+        colors: filteredData.map(item => () => item.color)
       }
     ],
-    barColors: ['#FF6347', '#32CD32', '#FF4500']
   };
   return (
     <View className="w-full flex flex-col justify-center items-center py-10">
-      <Text className="my-5 self-start px-5 font-bold text-lg">
-        Sorted Crops:
-      </Text>
+      <View className="w-[80%]">
+        <SelectList
+          setSelected={(val) => setFilterCrop(val)} 
+          data={crops} 
+          search={false}
+          save="value"
+          placeholder='Ex: Tomato'
+        />
+      </View>
+
+      <View className="self-start flex flex-row">
+        <Text className="my-5 px-5 font-bold text-lg">
+          Sorted Crops: 
+        </Text>
+        {
+          filterCrop === 'Tomato' && (
+            <View className="flex flex-row items-center justify-center">
+              <Image
+                source={require('../../../../assets/tomato.png')}
+                className="w-16 h-16"
+                resizeMode='contain'
+              />
+              <Text className="text-sm font-normal">/ {filterCrop}</Text>
+            </View>
+        )}
+        {
+          filterCrop === 'Cucumber' && (
+            <View className="flex flex-row items-center justify-center">
+              <Image
+                source={require('../../../../assets/cucumber.png')}
+                className="w-16 h-16"
+                resizeMode='contain'
+              />
+              <Text className="text-sm font-normal">/ {filterCrop}</Text>
+            </View>
+        )}
+        {
+          filterCrop === 'Chili' && (
+            <View className="flex flex-row items-center justify-center">
+              <Image
+                source={require('../../../../assets/chili.png')}
+                className="w-16 h-16"
+                resizeMode='contain'
+              />
+              <Text className="text-sm font-normal">/ {filterCrop}</Text>
+            </View>
+        )}
+      </View>
+      
       <ScrollView horizontal={true} >
         <BarChart
           data={data}
           width={screenWidth - 20}
           height={350}
           // yAxisLabel="$"
+          fromZero={true}
+          withCustomBarColorFromData={true}
+          flatColor={true}
           chartConfig={chartConfig}
           verticalLabelRotation={30}
           
