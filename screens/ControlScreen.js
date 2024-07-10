@@ -4,6 +4,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import NumericInput from 'react-native-numeric-input'
 import React, { useState, useEffect } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SelectList } from 'react-native-dropdown-select-list';
 import uuid from 'react-native-uuid';
 import firebase from '../firebase';
 import LottieView from 'lottie-react-native';
@@ -30,6 +31,14 @@ const ControlScreen = () => {
   const [kgTwo, setKgTwo] = useState(1);
   const [kgThree, setKgThree] = useState(1);
 
+  const [currentCrop, setCurrentCrop] = useState("");
+
+  const crops = [
+    {key: '1', value: 'Tomato'},
+    {key: '2', value: 'Cucumber'},
+    {key: '3', value: 'Chili'},
+  ]
+
   const [converyorState, setConveyorState] = useState('OFF');
   const [isStarting, setIsStarting] = useState();
 
@@ -53,19 +62,25 @@ const ControlScreen = () => {
     setColorTwo('#000000');
     setColorThree('#000000');
 
-    firebase.database().ref('colorOne' ).set('#000000');
-    firebase.database().ref('colorTwo' ).set('#000000');
-    firebase.database().ref('colorThree' ).set('#000000');
+    firebase.database().ref('colorOne').set('#000000');
+    firebase.database().ref('colorTwo').set('#000000');
+    firebase.database().ref('colorThree').set('#000000');
     
-    // setKgOne(1);
-    // setKgTwo(1);
-    // setKgThree(1);
+    setKgOne(0);
+    setKgTwo(0);
+    setKgThree(0);
+
+    firebase.database().ref('weightOne').set(0);
+    firebase.database().ref('weightTwo').set(0);
+    firebase.database().ref('weightThree').set(0);
+
+    firebase.database().ref('currentCrop').set('Tomato');
   }
 
   // BASKET 1
   const setRTDBColorOne = () => {
     const clrOne = colorOne;
-    firebase.database().ref('colorOne' ).set(clrOne);
+    firebase.database().ref('colorOne').set(clrOne);
   };
 
   const setRTDBWeightOne = () => {
@@ -115,6 +130,12 @@ const ControlScreen = () => {
       setColorThree(newClrThree);
     });
 
+    const rtdbCurrentCropRef = firebase.database().ref('currentCrop');
+    rtdbCurrentCropRef.on('value', (snapshot) => {
+      const newCurrentCrop = snapshot.val();
+      setCurrentCrop(newCurrentCrop);
+    });
+
   }, []);
 
   useEffect(() => {
@@ -155,6 +176,10 @@ const ControlScreen = () => {
     const newState = converyorState === 'ON' ? 'OFF' : 'ON';
     firebase.database().ref('conveyorState').set(newState);
     setConveyorState(newState); // Update local state immediately
+
+    // CROP
+    firebase.database().ref('currentCrop').set(currentCrop);
+    setCurrentCrop(currentCrop);
   };
   
 
@@ -175,14 +200,47 @@ const ControlScreen = () => {
     <ImageBackground
       source={require('../assets/bg-2.jpg')}
     >
-      <View className="h-full flex items-center pt-10">
+      <View className="h-full flex items-center">
         <Image
             source={require('../assets/logo.png')}
-            className="w-52 h-72"
+            className="w-52 h-40 "
             resizeMode='contain'
         />
+        {
+          currentCrop === 'Tomato' && (
+            <Image
+              source={require('../assets/tomato.png')}
+              className="w-52 h-28"
+              resizeMode='contain'
+            />
+        )}
+        {
+          currentCrop === 'Cucumber' && (
+            <Image
+              source={require('../assets/cucumber.png')}
+              className="w-52 h-28 "
+              resizeMode='contain'
+            />
+        )}
+        {
+          currentCrop === 'Chili' && (
+            <Image
+              source={require('../assets/chili.png')}
+              className="w-52 h-28 "
+              resizeMode='contain'
+            />
+        )}
+        <View className="w-[50%] mb-5">
+          <SelectList
+            setSelected={(val) => setCurrentCrop(val)} 
+            data={crops} 
+            search={false}
+            save="value"
+            placeholder='Ex: Tomato'
+          />
+        </View>
         {/* <Text>Device ID: {deviceId}</Text> */}
-        <View className="w-[90%] flex items-center justify-center -mt-8 ">
+        <View className="w-[90%] flex items-center justify-center mb-10">
 
             {/* BASKET 1 */}
             <View className="flex flex-row items-center gap-5">
@@ -425,7 +483,7 @@ const ControlScreen = () => {
               </View>
             </Modal>
         </View>
-        <View className="mt-auto mb-52 flex flex-row">
+        <View className="mb-52 flex flex-row">
           <TouchableOpacity className="border-2 rounded-full py-2 px-5 flex justify-center mr-8" onPress={toggleConveyor}>
             <Text className="text-center font-semibold">Start Sorting</Text>
           </TouchableOpacity>
