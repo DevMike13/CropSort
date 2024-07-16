@@ -3,8 +3,8 @@ import React from 'react'
 
 const StepFour = ({ setStep, navigation }) => {
 
-  const handleStepFinish = () => {
-    navigation.navigate('Mother')
+  const handleStepComplete = () => {
+    setStep((prevStep) => prevStep + 1);
   };
 
   const handleStepBack = () => {
@@ -18,22 +18,31 @@ const StepFour = ({ setStep, navigation }) => {
       <View className="h-full flex items-center pt-10">
         <Image
             source={require('../../assets/logo.png')}
-            className="w-52 h-72"
+            className="w-32 h-52"
             resizeMode='contain'
         />
         <View className="w-[90%] flex items-center justify-center -mt-8 ">
-            <Text>This is step 4.</Text>
+          <Image
+              source={require('../../assets/tut4.png')}
+              className="w-52 h-48"
+              resizeMode='contain'
+          />
+          <Text className="text-lg text-center font-semibold mt-5">Place crops you have chosen on the CropSort Device in the starting basket for effecient sorting</Text>
         </View>
         <View className="mt-auto mb-40 flex flex-row">
-          <TouchableOpacity className="border-2 rounded-full py-2 px-2 mr-2" onPress={handleStepBack}>
+          <TouchableOpacity className="border-2 rounded-full py-2 px-2 mr-10" onPress={handleStepBack}>
             <Image 
               source={require('../../assets/chevron-left.png')}
               className="w-8 h-8"
               resizeMode='cover'
             />
           </TouchableOpacity>
-          <TouchableOpacity className="border-2 rounded-full py-2 px-5 flex justify-center" onPress={handleStepFinish}>
-            <Text className="text-center font-semibold">Finish</Text>
+          <TouchableOpacity className="border-2 rounded-full py-2 px-2 " onPress={handleStepComplete}>
+            <Image 
+              source={require('../../assets/chevron-right.png')}
+              className="w-8 h-8"
+              resizeMode='cover'
+            />
           </TouchableOpacity>
         </View>
       </View>

@@ -18,11 +18,16 @@ const StepTwo = ({ setStep, navigation }) => {
       <View className="h-full flex items-center pt-10">
         <Image
             source={require('../../assets/logo.png')}
-            className="w-52 h-72"
+            className="w-32 h-52"
             resizeMode='contain'
         />
         <View className="w-[90%] flex items-center justify-center -mt-8 ">
-            <Text>This is step 2.</Text>
+          <Image
+              source={require('../../assets/tut2.png')}
+              className="w-52 h-48"
+              resizeMode='contain'
+          />
+          <Text className="text-lg text-center font-semibold mt-5">Turn on Cropsort Device</Text>
         </View>
         
         <View className="mt-auto mb-40 flex flex-row">

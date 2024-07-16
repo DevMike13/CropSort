@@ -10,14 +10,19 @@ const StepOne = ({ setStep, navigation }) => {
     <ImageBackground
       source={require('../../assets/bg-2.jpg')}
     >
-      <View className="h-full flex items-center pt-10">
+      <View className="h-full flex items-center">
         <Image
             source={require('../../assets/logo.png')}
-            className="w-52 h-72"
+            className="w-32 h-52"
             resizeMode='contain'
         />
         <View className="w-[90%] flex items-center justify-center -mt-8 ">
-            <Text>This is step 1.</Text>
+          <Image
+              source={require('../../assets/tut1.png')}
+              className="w-52 h-80"
+              resizeMode='contain'
+          />
+          <Text className="text-lg text-center font-semibold mt-5">Click Start, and for the application to load the main activity</Text>
         </View>
         <TouchableOpacity className="mt-auto mb-40 border-2 rounded-full py-2 px-2" onPress={handleStepComplete}>
           <Image 

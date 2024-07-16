@@ -1,16 +1,14 @@
 import { View, Text, TouchableOpacity, ImageBackground, Image } from 'react-native'
 import React from 'react'
 
-const StepThree = ({ setStep, navigation }) => {
-
-  const handleStepComplete = () => {
-    setStep((prevStep) => prevStep + 1);
-  };
-
-  const handleStepBack = () => {
-    setStep((prevStep) => prevStep - 1);
-  };
-
+const StepSeven = ({ setStep, navigation }) => {
+    const handleStepFinish = () => {
+        navigation.navigate('Mother')
+      };
+    
+      const handleStepBack = () => {
+        setStep((prevStep) => prevStep - 1);
+      };
   return (
     <ImageBackground
       source={require('../../assets/bg-2.jpg')}
@@ -23,27 +21,22 @@ const StepThree = ({ setStep, navigation }) => {
         />
         <View className="w-[90%] flex items-center justify-center -mt-8 ">
           <Image
-              source={require('../../assets/tut3.png')}
+              source={require('../../assets/tut7.png')}
               className="w-52 h-80"
               resizeMode='contain'
           />
-          <Text className="text-lg text-center font-semibold mt-5">Select Crop you want to sort</Text>
+          <Text className="text-lg text-center font-semibold mt-5">Result of the weight and customized color of each basket are shown in the CropSort Application.</Text>
         </View>
-        
-        <View className="mt-auto mb-40 flex flex-row">
-          <TouchableOpacity className="border-2 rounded-full py-2 px-2 mr-10" onPress={handleStepBack}>
+        <View className="mt-auto mb-24 flex flex-row">
+          <TouchableOpacity className="border-2 rounded-full py-2 px-2 mr-2" onPress={handleStepBack}>
             <Image 
               source={require('../../assets/chevron-left.png')}
               className="w-8 h-8"
               resizeMode='cover'
             />
           </TouchableOpacity>
-          <TouchableOpacity className="border-2 rounded-full py-2 px-2" onPress={handleStepComplete}>
-            <Image 
-              source={require('../../assets/chevron-right.png')}
-              className="w-8 h-8"
-              resizeMode='cover'
-            />
+          <TouchableOpacity className="border-2 rounded-full py-2 px-5 flex justify-center" onPress={handleStepFinish}>
+            <Text className="text-center font-semibold">Finish</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -52,4 +45,4 @@ const StepThree = ({ setStep, navigation }) => {
   )
 }
 
-export default StepThree
+export default StepSeven
