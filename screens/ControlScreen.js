@@ -105,13 +105,13 @@ const ControlScreen = () => {
   };
 
   const reset = () => {
-    setColorOne('#000000');
-    setColorTwo('#000000');
-    setColorThree('#000000');
+    setColorOne('black');
+    setColorTwo('black');
+    setColorThree('black');
 
-    firebase.database().ref('colorOne').set('#000000');
-    firebase.database().ref('colorTwo').set('#000000');
-    firebase.database().ref('colorThree').set('#000000');
+    firebase.database().ref('colorOne').set('black');
+    firebase.database().ref('colorTwo').set('black');
+    firebase.database().ref('colorThree').set('black');
     
     setKgOne(0);
     setKgTwo(0);
