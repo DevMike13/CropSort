@@ -8,12 +8,16 @@ import { SelectList } from 'react-native-dropdown-select-list';
 import uuid from 'react-native-uuid';
 import firebase from '../firebase';
 import LottieView from 'lottie-react-native';
+import RadioGroup from 'react-native-radio-buttons-group';
 
 import ColorPicker, { Panel1, Panel5, Swatches, Preview, OpacitySlider, HueSlider } from 'reanimated-color-picker';
 
 const ControlScreen = () => {
 
   // const [deviceId, setDeviceId] = useState(null);
+  const [radioButtons, setRadioButtons] = useState([]);
+  const [selectedColor, setSelectedColor] = useState('');
+  const [selectedColorValue, setSelectedColorValue] = useState('');
 
   const [showModalOne, setShowModalOne] = useState(false);
   const [showModalTwo, setShowModalTwo] = useState(false);
@@ -23,21 +27,64 @@ const ControlScreen = () => {
   const [showModalKgTwo, setShowModalKgTwo] = useState(false);
   const [showModalKgThree, setShowModalKgThree] = useState(false);
 
-  const [colorOne, setColorOne] = useState('#000000');
-  const [colorTwo, setColorTwo] = useState('#000000');
-  const [colorThree, setColorThree] = useState('#000000');
+  const [colorOne, setColorOne] = useState('');
+  const [colorTwo, setColorTwo] = useState('');
+  const [colorThree, setColorThree] = useState('');
 
   const [kgOne, setKgOne] = useState(1);
   const [kgTwo, setKgTwo] = useState(1);
   const [kgThree, setKgThree] = useState(1);
 
-  const [currentCrop, setCurrentCrop] = useState("");
+  const [currentCrop, setCurrentCrop] = useState("Tomato");
+
+  const colorOptionsForTomato = [
+    { id: '1', label: 'Red', value: 'red' },
+    { id: '2', label: 'Green', value: 'green' },
+    { id: '3', label: 'Orange', value: 'orange' },
+    { id: '4', label: 'Yellow', value: 'yellow' },
+  ];
+
+  const colorOptionsForCucumber = [
+    { id: '1', label: 'Green', value: 'green' },
+    { id: '2', label: 'Yellow', value: 'yellow' },
+    { id: '3', label: 'Yellow Green', value: 'yellow green' },
+  ];
+
+  const colorOptionsForChili = [
+    { id: '1', label: 'Red', value: 'red' },
+    { id: '2', label: 'Green', value: 'green' },
+    { id: '3', label: 'Yellow', value: 'yellow' },
+    { id: '4', label: 'Yellow Green', value: 'yellow green' },
+  ];
 
   const crops = [
     {key: '1', value: 'Tomato'},
     {key: '2', value: 'Cucumber'},
     {key: '3', value: 'Chili'},
-  ]
+  ];
+
+  const updateColorOptions = (crop) => {
+    setCurrentCrop(crop);
+    setSelectedColor(''); // Reset selected color ID when changing crops
+    setSelectedColorValue(''); // Reset selected color value
+
+    switch (crop) {
+      case 'Tomato':
+        setRadioButtons(colorOptionsForTomato);
+        break;
+      case 'Cucumber':
+        setRadioButtons(colorOptionsForCucumber);
+        break;
+      case 'Chili':
+        setRadioButtons(colorOptionsForChili);
+        break;
+      default:
+        setRadioButtons([]);
+    }
+  };
+  useEffect(() => {
+    updateColorOptions(currentCrop); // Update color options for the default crop (Tomato)
+  }, []);
 
   const [converyorState, setConveyorState] = useState('OFF');
   const [isStarting, setIsStarting] = useState();
@@ -236,11 +283,12 @@ const ControlScreen = () => {
         )}
         <View className="w-[50%] mb-5">
           <SelectList
-            setSelected={(val) => setCurrentCrop(val)} 
+            setSelected={(val) => updateColorOptions(val)}
             data={crops} 
             search={false}
             save="value"
             placeholder='Ex: Tomato'
+            defaultOption={{ key: '1', value: 'Tomato' }}
           />
         </View>
         {/* <Text>Device ID: {deviceId}</Text> */}
@@ -330,14 +378,27 @@ const ControlScreen = () => {
             {/* MODAL 1 */}
             <Modal isVisible={showModalOne}>
               <View className="bg-slate-100 flex justify-center items-center rounded-lg">
-                <ColorPicker style={{ width: '70%' }} value='red' onComplete={onSelectColorOne}>
-                  <View className="py-5">
-                    <Preview hideInitialColor colorFormat='rgb' />
-                  </View>
-                  <View className="pt-5 pb-1 px-2 bg-white flex justify-center shadow-2xl rounded-xl">
-                    <Swatches colors={['red', 'green', 'blue', 'violet']} />
-                  </View>
-                </ColorPicker>
+                {currentCrop && (
+                  <>
+                    <View className="py-5 flex justify-center items-center">
+                      <Text>Select a Color for {currentCrop}</Text>
+                      <RadioGroup 
+                        radioButtons={radioButtons}
+                        onPress={(selectedId) => {
+                          setSelectedColor(selectedId);
+                          const selectedOption = radioButtons.find(rb => rb.id === selectedId);
+                          if (selectedOption) {
+                            setColorOne(selectedOption.value);
+                            console.log("Selected Color Value:", selectedOption.value);
+                          }
+                        }}
+                        selectedId={selectedColor}
+                        layout={'row'}
+                        containerStyle={{ paddingVertical: 10}}
+                      />
+                    </View>
+                  </>
+                )}
                 <TouchableOpacity className="bg-green-500 py-3 px-8 my-5 rounded-full" 
                   onPress={() => {
                     setShowModalOne(false);
@@ -353,14 +414,24 @@ const ControlScreen = () => {
             {/* MODAL 2 */}
             <Modal isVisible={showModalTwo}>
               <View className="bg-slate-100 flex justify-center items-center rounded-lg">
-                <ColorPicker style={{ width: '70%' }} value='red' onComplete={onSelectColorTwo}>
-                  <View className="py-5">
-                    <Preview hideInitialColor colorFormat='rgb' />
-                  </View>
-                  <View className="pt-5 pb-1 px-2 bg-white flex justify-center shadow-2xl rounded-xl">
-                    <Swatches colors={['red', 'green', 'blue', 'violet']} />
-                  </View>
-                </ColorPicker>
+                {currentCrop && (
+                  <>
+                    <Text>Select a Color for {currentCrop}:</Text>
+                    <RadioGroup 
+                      radioButtons={radioButtons}
+                      onPress={(selectedId) => {
+                        setSelectedColor(selectedId);
+                        const selectedOption = radioButtons.find(rb => rb.id === selectedId);
+                        if (selectedOption) {
+                          setColorTwo(selectedOption.value);
+                          console.log("Selected Color Value:", selectedOption.value);
+                        }
+                      }}
+                      selectedId={selectedColor}
+                      layout={'row'}
+                    />
+                  </>
+                )}
                 <TouchableOpacity className="bg-green-500 py-3 px-8 my-5 rounded-full" 
                   onPress={() => {
                     setShowModalTwo(false)
@@ -377,14 +448,24 @@ const ControlScreen = () => {
             {/* MODAL 3 */}
             <Modal isVisible={showModalThree}>
               <View className="bg-slate-100 flex justify-center items-center rounded-lg">
-                <ColorPicker style={{ width: '70%' }} value='red' onComplete={onSelectColorThree}>
-                  <View className="py-5">
-                    <Preview hideInitialColor colorFormat='rgb' />
-                  </View>
-                  <View className="pt-5 pb-1 px-2 bg-white flex justify-center shadow-2xl rounded-xl">
-                    <Swatches colors={['red', 'green', 'blue', 'violet']} />
-                  </View>
-                </ColorPicker>
+                {currentCrop && (
+                  <>
+                    <Text>Select a Color for {currentCrop}:</Text>
+                    <RadioGroup 
+                      radioButtons={radioButtons}
+                      onPress={(selectedId) => {
+                        setSelectedColor(selectedId);
+                        const selectedOption = radioButtons.find(rb => rb.id === selectedId);
+                        if (selectedOption) {
+                          setColorThree(selectedOption.value);
+                          console.log("Selected Color Value:", selectedOption.value);
+                        }
+                      }}
+                      selectedId={selectedColor}
+                      layout={'row'}
+                    />
+                  </>
+                )}
                 <TouchableOpacity className="bg-green-500 py-3 px-8 my-5 rounded-full" 
                   onPress={() => {
                     setShowModalThree(false)
