@@ -125,6 +125,10 @@ const ControlScreen = () => {
     setCurrentCrop('Tomato')
   }
 
+  const stopSorting = () => {
+    firebase.database().ref('conveyorState').set('OFF');
+  }
+
   // BASKET 1
   const setRTDBColorOne = () => {
     const clrOne = colorOne;
@@ -565,6 +569,16 @@ const ControlScreen = () => {
                   source={require('../assets/starting.json')}
                 />
                 <Text className="text-center font-black text-xl py-7 text-green-400 tracking-[3px] -mt-8">Sorting...</Text>
+                <TouchableOpacity className="bg-green-500 py-3 px-8 my-5 rounded-full" 
+                  onPress={() => {
+                    setConveyorState('OFF');
+                    stopSorting();
+                  }}
+                >
+                  <Text className="text-white">
+                    Stop
+                  </Text>
+                </TouchableOpacity>
               </View>
             </Modal>
         </View>
