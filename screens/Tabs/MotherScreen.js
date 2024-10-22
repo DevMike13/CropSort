@@ -6,6 +6,7 @@ import React from 'react'
 
 import HomeScreen from './Home/HomeScreen';
 import RepInvScreen from './RI/RepInvScreen';
+import HistoryScreen from './History/HistoryScreen';
 
 import { COLORS, FONT, SIZES } from '../../constants/theme';
 
@@ -83,6 +84,41 @@ const MotherScreen = ({ navigation }) => {
                     size={iconInfo.focused ? 24 : 20}
                     color={iconInfo.focused ? 'green' : COLORS.gray4}
                 />
+                );
+            },
+            headerTitle: "",
+            headerStyle:{
+                backgroundColor:COLORS.lightWhite,
+            },
+            headerShadowVisible: false,
+            headerShown: false,
+            }}
+        />
+
+        <Tab.Screen 
+            name="History" 
+            component={HistoryScreen} 
+            options={{
+            tabBarLabel: (tabInfo) => {
+                return (
+                <Text
+                    style={{ 
+                    color: tabInfo.focused ? 'green' : COLORS.gray4, 
+                    fontFamily: tabInfo.focused ? FONT.bold : FONT.regular,
+                    fontSize: SIZES.small
+                    }}
+                >
+                    History
+                </Text>
+                );
+            },
+            tabBarIcon: (iconInfo) => {
+                return (
+                    <Ionicons
+                        name={iconInfo.focused ? "repeat" : "repeat-outline"} 
+                        size={iconInfo.focused ? 24 : 20}
+                        color={iconInfo.focused ? 'green' : COLORS.gray4}
+                    />
                 );
             },
             headerTitle: "",
