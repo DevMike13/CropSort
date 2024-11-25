@@ -8,7 +8,7 @@ const DisclaimerScreen = () => {
     const handleGoToMain = () => {
         navigation.reset({
             index: 0,
-            routes: [{ name: 'Mother' }],
+            routes: [{ name: 'Login' }],
         });
     };
   return (

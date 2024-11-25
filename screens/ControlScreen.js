@@ -40,21 +40,19 @@ const ControlScreen = () => {
   const colorOptionsForTomato = [
     { id: '1', label: 'Red', value: 'red' },
     { id: '2', label: 'Green', value: 'green' },
-    { id: '3', label: 'Orange', value: 'orange' },
     { id: '4', label: 'Yellow', value: 'yellow' },
   ];
 
   const colorOptionsForCucumber = [
     { id: '1', label: 'Green', value: 'green' },
-    { id: '2', label: 'Yellow', value: 'yellow' },
-    { id: '3', label: 'Yellow Green', value: 'yellow green' },
+    { id: '2', label: 'Light Green', value: 'light green' },
+    { id: '3', label: 'Dark Green', value: 'dark green' },
   ];
 
   const colorOptionsForChili = [
     { id: '1', label: 'Red', value: 'red' },
     { id: '2', label: 'Green', value: 'green' },
     { id: '3', label: 'Yellow', value: 'yellow' },
-    { id: '4', label: 'Yellow Green', value: 'yellow green' },
   ];
 
   const crops = [

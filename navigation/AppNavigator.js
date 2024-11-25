@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import Modal from "react-native-modal";
 import firebase from '../firebase';
 import Toast from 'react-native-toast-message';
+import { Ionicons } from '@expo/vector-icons';
 
 import DisclaimerScreen from '../screens/DisclaimerScreen';
 import MainScreen from '../screens/MainScreen';
@@ -12,6 +13,8 @@ import TutorialScreen from '../screens/TutorialScreen';
 import ControlScreen from '../screens/ControlScreen';
 import AboutScreen from '../screens/AboutScreen';
 import MotherScreen from '../screens/Tabs/MotherScreen';
+import LoginScreen from '../screens/Auth/Login/LoginScreen';
+import AccountScreen from '../screens/Auth/Account/AccountScreen';
 
 import { Image, Text, TouchableOpacity, View, Button, ActivityIndicator  } from 'react-native';
 
@@ -125,6 +128,11 @@ const AppNavigator = () => {
         <NavigationContainer>
             <Stack.Navigator>
                 <Stack.Screen 
+                    name="Login" 
+                    component={LoginScreen} 
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen 
                     name="Disclaimer" 
                     component={DisclaimerScreen} 
                     options={{ headerShown: false }}
@@ -137,12 +145,34 @@ const AppNavigator = () => {
                         headerTitle: '',
                         headerShadowVisible: true,
                         headerLeft: () => (
-                            <TouchableOpacity className="w-8 h-8 px-2" onPress={() => navigation.navigate('Disclaimer')}>
-                                <Image
-                                    source={require('../assets/bell.png')}
-                                    className="w-8 h-8"
-                                    resizeMode='cover'
-                                />
+                            <TouchableOpacity className="px-2" onPress={() => navigation.navigate("Account")}>
+                               <Ionicons name="person-outline" size={26} color="black" />
+                            </TouchableOpacity>
+                        ),
+                        headerRight: () => (
+                            <TouchableOpacity className="w-auto h-auto bg-green-400 mr-5 flex justify-center items-center flex-row px-6 py-1.5 rounded-md" onPress={() => showModal()}>
+                                <Text>Season: </Text>
+                                {
+                                    isLoading ? (
+                                        <ActivityIndicator size="small" color="#00ff00" />
+                                    ) : (
+                                        <Text className="ml-3 font-bold text-base bg-orange-200 px-2 rounded-full">{seasonInfo}</Text>
+                                    )
+                                }
+                            </TouchableOpacity>
+                        ),
+                    })}
+                />
+                 <Stack.Screen 
+                    name="Account" 
+                    component={AccountScreen} 
+                    options={({ navigation }) => ({
+                        headerShown: true,
+                        headerTitle: '',
+                        headerShadowVisible: true,
+                        headerLeft: () => (
+                            <TouchableOpacity className="px-2" onPress={() => navigation.goBack()}>
+                               <Ionicons name="arrow-back-outline" size={26} color="black" />
                             </TouchableOpacity>
                         ),
                         headerRight: () => (
@@ -167,12 +197,8 @@ const AppNavigator = () => {
                         headerTitle: '',
                         headerShadowVisible: true,
                         headerLeft: () => (
-                            <TouchableOpacity className="w-8 h-8 px-2" onPress={() => navigation.navigate('Disclaimer')}>
-                                <Image
-                                    source={require('../assets/bell.png')}
-                                    className="w-8 h-8"
-                                    resizeMode='cover'
-                                />
+                            <TouchableOpacity className="px-2" onPress={() => navigation.navigate("Account")}>
+                                <Ionicons name="person-outline" size={26} color="black" />
                             </TouchableOpacity>
                         ),
                         headerRight: () => (
