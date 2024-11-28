@@ -3,16 +3,14 @@ import React from 'react'
 
 const AboutScreen = () => {
   return (
-    <ImageBackground
-    source={require('../assets/bg-2.jpg')}
-  >
-    <View className="h-full flex items-center pt-10">
+    
+    <View className="h-full flex items-center pt-10 bg-[#a0ebb3]">
       <Image
           source={require('../assets/logo.png')}
           className="w-52 h-72"
           resizeMode='contain'
       />
-      <View className="w-[80%] flex items-center justify-center -mt-8 bg-green-300 rounded-lg">
+      <View className="w-[80%] flex items-center justify-center -mt-4 bg-green-300 rounded-lg border-2 border-white">
           <Text className="text-center font-semibold text-xl py-5">About Cropsort</Text>
           <View className="w-full h-[1px] bg-slate-400"></View>
           <Text className="text-center font-medium text-base py-10 px-5">
@@ -20,8 +18,6 @@ const AboutScreen = () => {
           </Text>
       </View>
     </View>
-    
-  </ImageBackground>
   )
 }
 

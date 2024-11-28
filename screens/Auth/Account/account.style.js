@@ -8,19 +8,28 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
+        backgroundColor: '#a0ebb3'
       },
       title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 20,
+        marginBottom: 20
       },
       accountInfo: {
+        width: '90%',
         marginBottom: 20,
         alignItems: 'flex-start',
       },
       label: {
+        fontFamily: FONT.bold,
         fontSize: 18,
         marginVertical: 5,
+      },
+      userDetailsText:{
+        fontFamily: FONT.medium,
+        fontSize: SIZES.medium,
+        marginLeft: SIZES.xxxLarge,
+        marginBottom: 20
       },
       noUserText: {
         fontSize: 16,

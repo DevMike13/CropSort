@@ -12,16 +12,14 @@ const StepTwo = ({ setStep, navigation }) => {
   };
 
   return (
-    <ImageBackground
-      source={require('../../assets/bg-2.jpg')}
-    >
-      <View className="h-full flex items-center pt-10">
+      <View className="h-full flex items-center pt-10 bg-[#a0ebb3]">
         <Image
             source={require('../../assets/logo.png')}
             className="w-32 h-52"
             resizeMode='contain'
         />
         <View className="w-[90%] flex items-center justify-center -mt-8 ">
+          <Text className="text-lg font-bold">TUTORIAL</Text>
           <Image
               source={require('../../assets/tut2.png')}
               className="w-52 h-48"
@@ -34,22 +32,20 @@ const StepTwo = ({ setStep, navigation }) => {
           <TouchableOpacity className="border-2 rounded-full py-2 px-2 mr-10" onPress={handleStepBack}>
             <Image 
               source={require('../../assets/chevron-left.png')}
-              className="w-8 h-8"
+              className="w-7 h-7"
               resizeMode='cover'
             />
           </TouchableOpacity>
           <TouchableOpacity className="border-2 rounded-full py-2 px-2" onPress={handleStepComplete}>
             <Image 
               source={require('../../assets/chevron-right.png')}
-              className="w-8 h-8"
+              className="w-7 h-7"
               resizeMode='cover'
             />
           </TouchableOpacity>
         </View>
         
       </View>
-      
-    </ImageBackground>
   )
 }
 

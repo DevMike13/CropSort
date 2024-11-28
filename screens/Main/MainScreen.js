@@ -25,12 +25,10 @@ const MainScreen = () => {
     }
 
   return (
-    <ImageBackground
-      source={require('../assets/bg-2.jpg')}
-    >
+   
       <View className="h-full flex items-center pt-16">
         <Image
-            source={require('../assets/logo.png')}
+            source={require('../../assets/logo.png')}
             className="w-2/3 h-72"
             resizeMode='contain'
         />
@@ -53,7 +51,7 @@ const MainScreen = () => {
             </TouchableOpacity>
         </View>
       </View>
-    </ImageBackground>
+    
   )
 }
 

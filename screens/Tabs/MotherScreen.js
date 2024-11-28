@@ -2,17 +2,37 @@ import { View, Text } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import HomeScreen from './Home/HomeScreen';
 import RepInvScreen from './RI/RepInvScreen';
 import HistoryScreen from './History/HistoryScreen';
+import AccountScreen from './Accounts/AccountScreen';
 
 import { COLORS, FONT, SIZES } from '../../constants/theme';
 
 const Tab = createBottomTabNavigator();
 
 const MotherScreen = ({ navigation }) => {
+    const [userType, setUserType] = useState(null);
+
+    useEffect(() => {
+    const fetchUserType = async () => {
+        try {
+        const storedUser = await AsyncStorage.getItem('user');
+        if (storedUser) {
+            const parsedUser = JSON.parse(storedUser);
+            setUserType(parsedUser.userType); // Extract userType
+        }
+        } catch (error) {
+        console.error('Error fetching userType:', error);
+        }
+    };
+
+    fetchUserType();
+    }, []);
+
   return (
     <Tab.Navigator 
         screenOptions={{
@@ -70,7 +90,7 @@ const MotherScreen = ({ navigation }) => {
                     style={{ 
                     color: tabInfo.focused ? 'green' : COLORS.gray4, 
                     fontFamily: tabInfo.focused ? FONT.bold : FONT.regular,
-                    fontSize: SIZES.small
+                    fontSize: 10
                     }}
                 >
                     Report & Inventory
@@ -129,6 +149,39 @@ const MotherScreen = ({ navigation }) => {
             headerShown: false,
             }}
         />
+
+    {userType === 'admin' && (
+        <Tab.Screen
+          name="Accounts"
+          component={AccountScreen}
+          options={{
+            tabBarLabel: (tabInfo) => (
+              <Text
+                style={{
+                  color: tabInfo.focused ? 'green' : COLORS.gray4,
+                  fontFamily: tabInfo.focused ? FONT.bold : FONT.regular,
+                  fontSize: SIZES.small,
+                }}
+              >
+                Administrator
+              </Text>
+            ),
+            tabBarIcon: (iconInfo) => (
+              <Ionicons
+                name={iconInfo.focused ? "cog" : "cog-outline"}
+                size={iconInfo.focused ? 24 : 20}
+                color={iconInfo.focused ? 'green' : COLORS.gray4}
+              />
+            ),
+            headerTitle: "",
+            headerStyle: {
+              backgroundColor: COLORS.lightWhite,
+            },
+            headerShadowVisible: false,
+            headerShown: false,
+          }}
+        />
+      )}
     </Tab.Navigator>
   )
 }

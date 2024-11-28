@@ -7,14 +7,15 @@ import firebase from '../firebase';
 import Toast from 'react-native-toast-message';
 import { Ionicons } from '@expo/vector-icons';
 
-import DisclaimerScreen from '../screens/DisclaimerScreen';
-import MainScreen from '../screens/MainScreen';
+import DisclaimerScreen from '../screens/Disclaimer/DisclaimerScreen';
+import MainScreen from '../screens/Main/MainScreen';
 import TutorialScreen from '../screens/TutorialScreen';
 import ControlScreen from '../screens/ControlScreen';
 import AboutScreen from '../screens/AboutScreen';
 import MotherScreen from '../screens/Tabs/MotherScreen';
 import LoginScreen from '../screens/Auth/Login/LoginScreen';
 import AccountScreen from '../screens/Auth/Account/AccountScreen';
+import RegisterScreen from '../screens/Auth/Register/RegisterScreen';
 
 import { Image, Text, TouchableOpacity, View, Button, ActivityIndicator  } from 'react-native';
 
@@ -130,6 +131,11 @@ const AppNavigator = () => {
                 <Stack.Screen 
                     name="Login" 
                     component={LoginScreen} 
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen 
+                    name="Register" 
+                    component={RegisterScreen} 
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen 

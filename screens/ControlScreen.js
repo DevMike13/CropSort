@@ -209,21 +209,32 @@ const ControlScreen = () => {
     const rtdbWeightOne = firebase.database().ref('weightOne');
     rtdbWeightOne.on('value', (snapshot) => {
       const newWeightOne = snapshot.val();
-      setKgOne(newWeightOne);
+      const roundedWeightOne = Math.max(0, parseFloat(newWeightOne).toFixed(2)); // Ensure 2 decimals and no negatives
+      setKgOne(roundedWeightOne);
     });
-
+  
     const rtdbWeightTwo = firebase.database().ref('weightTwo');
     rtdbWeightTwo.on('value', (snapshot) => {
       const newWeightTwo = snapshot.val();
-      setKgTwo(newWeightTwo);
+      const roundedWeightTwo = Math.max(0, parseFloat(newWeightTwo).toFixed(2)); // Ensure 2 decimals and no negatives
+      setKgTwo(roundedWeightTwo);
     });
-
+  
     const rtdbWeightThree = firebase.database().ref('weightThree');
     rtdbWeightThree.on('value', (snapshot) => {
       const newWeightThree = snapshot.val();
-      setKgThree(newWeightThree);
+      const roundedWeightThree = Math.max(0, parseFloat(newWeightThree).toFixed(2)); // Ensure 2 decimals and no negatives
+      setKgThree(roundedWeightThree);
     });
+  
+    // Clean up the listeners when the component unmounts
+    return () => {
+      rtdbWeightOne.off('value');
+      rtdbWeightTwo.off('value');
+      rtdbWeightThree.off('value');
+    };
   }, []);
+  
 
   const toggleConveyor = () => {
     const newState = converyorState === 'ON' ? 'OFF' : 'ON';
@@ -250,13 +261,11 @@ const ControlScreen = () => {
 
 
   return (
-    <ImageBackground
-      source={require('../assets/bg-2.jpg')}
-    >
-      <View className="h-full flex items-center">
+   
+      <View className="h-full flex items-center bg-[#a0ebb3]">
         <Image
             source={require('../assets/logo.png')}
-            className="w-52 h-40 "
+            className="w-[120] h-40"
             resizeMode='contain'
         />
         {
@@ -294,7 +303,7 @@ const ControlScreen = () => {
           />
         </View>
         {/* <Text>Device ID: {deviceId}</Text> */}
-        <View className="w-[90%] flex items-center justify-center mb-10">
+        <View className="w-[90%] flex items-center justify-center mb-10 border-2 p-5 border-white rounded-lg">
 
             {/* BASKET 1 */}
             <View className="flex flex-row items-center gap-5">
@@ -589,8 +598,6 @@ const ControlScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-      
-    </ImageBackground>
   )
 }
 

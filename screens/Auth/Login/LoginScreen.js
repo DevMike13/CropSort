@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import firebase from '../../../firebase';
+import { Ionicons } from '@expo/vector-icons';
 
 import styles from './login.styles';
 import { FONT } from '../../../constants/theme';
@@ -13,6 +14,7 @@ const LoginScreen = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleGoToDisclaimer = () => {
@@ -20,7 +22,18 @@ const LoginScreen = () => {
         index: 0,
         routes: [{ name: 'Disclaimer' }],
     });
-};
+  };
+
+  const handleGoToRegister = () => {
+    navigation.reset({
+        index: 0,
+        routes: [{ name: 'Register' }],
+    });
+  };
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   useEffect(() => {
     const checkLoggedIn = async () => {
@@ -45,23 +58,64 @@ const LoginScreen = () => {
       });
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
       // Firebase Authentication login
       const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
       const user = userCredential.user;
-
-      // Save user data in AsyncStorage
-      await AsyncStorage.setItem('user', JSON.stringify({ uid: user.uid, email: user.email }));
-
+  
+      // Fetch user document from Firestore
+      const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+  
+      if (!userDoc.exists) {
+        setLoading(false);
+        Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: 'Login failed',
+          text2: 'User not found in the database.',
+        });
+        return;
+      }
+  
+      const userData = userDoc.data();
+  
+      // Check if the account is approved
+      if (!userData.isApproved) {
+        setLoading(false);
+        Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: 'Account Not Approved',
+          text2: 'Your account is pending approval by the admin.',
+        });
+  
+        // Optional: Sign out the user from Firebase Authentication
+        await firebase.auth().signOut();
+  
+        return;
+      }
+  
+      // Save user data in AsyncStorage, including userType and isApproved
+      await AsyncStorage.setItem(
+        'user',
+        JSON.stringify({
+          uid: user.uid,
+          fullname: userData.fullname,
+          email: user.email,
+          userType: userData.userType,
+          isApproved: userData.isApproved,
+        })
+      );
+  
       // Navigate to the home screen
       navigation.reset({
         index: 0,
         routes: [{ name: 'Mother' }],
       });
-
+  
       setLoading(false);
       Toast.show({
         type: 'success',
@@ -79,16 +133,17 @@ const LoginScreen = () => {
       });
     }
   };
+  
 
 
   return (
     <SafeAreaView style={styles.container}>
         <View style={styles.headerContainer}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            {/* <Image
-              style={{ width: 70, height: 70}}
-              source={require('../../assets/fortopicon.png')}
-            /> */}
+          <View style={{ flexDirection: "column", alignItems: "center" }}>
+            <Image
+              style={{ width: 100, height: 100}}
+              source={require('../../../assets/logo.png')}
+            />
              <Text style={styles.appTitle}>Welcome Back!</Text>
           </View>
           <Text style={styles.appSubTitle}>Please enter your account here</Text>
@@ -96,27 +151,35 @@ const LoginScreen = () => {
         <View style={styles.contentContainer}>
             <View style={{ width: "90%"}}>
                 <View style={styles.inputContainer}>
-                    <View style={styles.inputWrapper}>
-                        <TextInput
-                          style={styles.inInput}
-                          placeholder='Email'
-                          value={email}
-                          onChangeText={setEmail}
-                          keyboardType="email-address"
-                          textContentType='emailAddress'
-                        />
+                  <View style={styles.inputWrapper}>
+                    <TextInput
+                      style={styles.inInput}
+                      placeholder='Email'
+                      value={email}
+                      onChangeText={setEmail}
+                      keyboardType="email-address"
+                      textContentType='emailAddress'
+                      placeholderTextColor="gray"
+                    />
+                    <View>
+                      <Ionicons name="mail-outline" size={28} color="gray" />
                     </View>
+                  </View>
                 </View>
                 <View style={styles.inputContainer}>
-                    <View style={styles.inputWrapper}>
-                        <TextInput
-                          style={styles.inInput}
-                          placeholder='Password'
-                          value={password}
-                          onChangeText={setPassword}
-                          secureTextEntry={true}
-                        />
-                    </View>
+                  <View style={styles.inputWrapper}>
+                    <TextInput
+                      style={styles.inInput}
+                      placeholder='Password'
+                      value={password}
+                      onChangeText={setPassword}
+                      secureTextEntry={!isPasswordVisible}
+                      placeholderTextColor="gray"
+                    />
+                    <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
+                      <Ionicons name={isPasswordVisible ? 'eye-outline' : 'eye-off-outline'} size={28} color="gray" />
+                    </TouchableOpacity>
+                  </View>
                 </View>
             </View>
             <TouchableOpacity style={styles.loginBtn} onPress={handleLogin} disabled={loading}>
@@ -135,21 +198,20 @@ const LoginScreen = () => {
 
                 </View>
             </View>
-            {/* <View style={{ width: "90%"}}>
+            <View style={{ width: "90%"}}>
                 <View style={styles.regContainer}>
                     <View style={styles.regWrapper}>
                         <Text style={styles.regText}>I don't have an account?</Text>
                     </View>
-                    <TouchableOpacity style={styles.regBtn} onPress={handleRegister}>
+                    <TouchableOpacity style={styles.regBtn} onPress={handleGoToRegister}>
                         <Text style={styles.regBtnText}>Register Now!</Text>
                     </TouchableOpacity>
                 </View>
-            </View> */}
+            </View>
             <View style={{ width: "70%" }}>
                 <Text style={{ textAlign: "center", alignItems: "center", fontFamily: FONT.regular }}>
                   By signing up you accept the{' '}
-                  <Text style={{ textDecorationLine: 'underline', color: "#277df8", fontFamily: FONT.regular }} >Terms of Use</Text>{' '}
-                  and Privacy Policy
+                  <Text style={{ textDecorationLine: 'underline', color: "#277df8", fontFamily: FONT.regular }} >Terms of Use</Text>
               </Text>
               <TouchableOpacity onPress={handleGoToDisclaimer} style={{ marginTop: 20}}>
                 <Text style={{ textAlign: "center", alignItems: "center", fontFamily: FONT.regular, textDecorationLine: 'underline', color: "#277df8" }}>

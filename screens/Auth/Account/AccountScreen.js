@@ -44,12 +44,23 @@ const AccountScreen = () => {
   };
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Account Details</Text>
+      
 
       {user ? (
         <View style={styles.accountInfo}>
-          <Text style={styles.label}>Email: {user.email}</Text>
-          <Text style={styles.label}>UID: {user.uid}</Text>
+          <Text style={styles.title}>Account Details</Text>
+          <Text style={styles.label}>Full Name: </Text>
+          <Text style={styles.userDetailsText}>
+            {user.fullname}
+          </Text>
+          <Text style={styles.label}>Email: </Text>
+          <Text style={styles.userDetailsText}>
+            {user.email}
+          </Text>
+          <Text style={styles.label}>User Type: </Text>
+          <Text style={styles.userDetailsText}>
+            {user.userType}
+          </Text>
         </View>
       ) : (
         <Text style={styles.noUserText}>No user found. Please log in.</Text>

@@ -1,5 +1,7 @@
-import { View, Text, Image, ImageBackground, TouchableOpacity } from 'react-native'
+import { View, Text, Image, ImageBackground, TouchableOpacity, SafeAreaView } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
+
+import styles from './home.style';
 
 const HomeScreen = () => {
     const navigation = useNavigation();
@@ -24,35 +26,30 @@ const HomeScreen = () => {
     }
 
   return (
-    <ImageBackground
-      source={require('../../../assets/bg-2.jpg')}
-    >
-      <View className="h-full flex items-center pt-16">
-        <Image
-            source={require('../../../assets/logo.png')}
-            className="w-2/3 h-72"
-            resizeMode='contain'
-        />
-        <View className="w-[90%] flex items-center justify-center -mt-8">
-            
-            <TouchableOpacity className="w-1/2 h-12 bg-green-400 flex justify-center rounded-full mt-5 " onPress={handleGoToTutorial}>
-                <Text className="text-center font-bold text-lg">
-                    How to Use
-                </Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="w-1/2 h-12 bg-green-400 flex justify-center rounded-full mt-5" onPress={handleGoToContols}>
-                <Text className="text-center font-bold text-lg">
-                    Start
-                </Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="w-1/2 h-12 bg-green-400 flex justify-center rounded-full mt-5" onPress={handleGoToAbout}>
-                <Text className="text-center font-bold text-lg">
-                    About
-                </Text>
-            </TouchableOpacity>
-        </View>
+    <SafeAreaView style={styles.container}>
+      <Image
+          source={require('../../../assets/logo.png')}
+          style={{ width: 150, height: 150 }}
+          resizeMode='contain'
+      />
+      <View style={styles.btnContainer}>
+          <TouchableOpacity style={styles.btn} onPress={handleGoToTutorial}>
+              <Text style={styles.btnText}>
+                  How to Use
+              </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.btn} onPress={handleGoToContols}>
+              <Text style={styles.btnText}>
+                  Start
+              </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.btn} onPress={handleGoToAbout}>
+              <Text style={styles.btnText}>
+                  About
+              </Text>
+          </TouchableOpacity>
       </View>
-    </ImageBackground>
+    </SafeAreaView>
   )
 }
 
