@@ -22,16 +22,32 @@ const NotificationScreen = () => {
             ...doc.data(),
           }));
           setNotifications(fetchedNotifications);
+  
+          // Update status of all notifications to "old"
+          const batch = firebase.firestore().batch();
+          snapshot.docs.forEach((doc) => {
+            const notificationRef = firebase.firestore().collection('notifications').doc(doc.id);
+            batch.update(notificationRef, { status: 'old' });
+          });
+  
+          // Commit the batch update only if there's a change
+          if (!snapshot.metadata.hasPendingWrites) {
+            batch.commit().then(() => {
+              console.log('Successfully updated all notifications to old');
+            }).catch((error) => {
+              console.error('Error updating notifications status:', error);
+            });
+          }
         },
         (error) => {
           console.error('Error fetching notifications:', error);
         }
       );
-
+  
     // Cleanup the listener when the component unmounts
     return () => unsubscribe();
   }, []);
-
+  
   // Delete notification
   const handleDelete = async () => {
     if (selectedNotificationId) {
