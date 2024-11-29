@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import styles from './login.styles';
 import { FONT } from '../../../constants/theme';
+import { usePushNotification } from '../../../useNotification';
 
 const LoginScreen = () => {
     const navigation = useNavigation();
@@ -16,6 +17,9 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { registerAndStorePushToken } = usePushNotification();
 
   const handleGoToDisclaimer = () => {
     navigation.reset({
@@ -34,6 +38,14 @@ const LoginScreen = () => {
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const checkLoggedIn = async () => {
@@ -109,6 +121,7 @@ const LoginScreen = () => {
           isApproved: userData.isApproved,
         })
       );
+      registerAndStorePushToken();
   
       // Navigate to the home screen
       navigation.reset({
@@ -129,12 +142,22 @@ const LoginScreen = () => {
         type: 'error',
         position: 'top',
         text1: 'Login failed',
-        text2: error.message,
+        text2: 'Invalid Credentials.',
       });
     }
   };
   
-
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Image
+          source={require('../../../assets/logo.png')}
+          resizeMode='contain'
+          style={{ width: 150, height: '100%', alignSelf: 'center' }}
+        />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>

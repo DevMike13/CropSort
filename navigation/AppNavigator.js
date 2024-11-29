@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import Modal from "react-native-modal";
 import firebase from '../firebase';
@@ -16,6 +17,7 @@ import MotherScreen from '../screens/Tabs/MotherScreen';
 import LoginScreen from '../screens/Auth/Login/LoginScreen';
 import AccountScreen from '../screens/Auth/Account/AccountScreen';
 import RegisterScreen from '../screens/Auth/Register/RegisterScreen';
+import NotificationScreen from '../screens/Notification/NotificationScreen';
 
 import { Image, Text, TouchableOpacity, View, Button, ActivityIndicator  } from 'react-native';
 
@@ -28,6 +30,24 @@ const AppNavigator = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [seasonInfo, setSeasonInfo] = useState('');
     const [currentSeason, setCurrentSeason] = useState(0);
+
+    const [user, setUser] = useState(null);
+    const [newStatusCount, setNewStatusCount] = useState(0);
+
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const userData = await AsyncStorage.getItem('user');
+                if (userData) {
+                    setUser(JSON.parse(userData));
+                }
+            } catch (error) {
+                console.error('Error retrieving user from AsyncStorage:', error);
+            }
+        };
+
+        loadUser();
+    }, []);
 
     // Function to toggle the modal visibility
     const showModal = () => {
@@ -124,6 +144,18 @@ const AppNavigator = () => {
     useEffect(() => {
         getCurrentSeason();
     }, []);
+
+    useEffect(() => {
+            const unsubscribe = firebase
+                .firestore()
+                .collection('notifications')
+                .where('status', '==', 'new')
+                .onSnapshot(snapshot => {
+                    setNewStatusCount(snapshot.size);
+                });
+            return () => unsubscribe(); 
+        
+    }, []);
     
     return (
         <NavigationContainer>
@@ -156,20 +188,33 @@ const AppNavigator = () => {
                             </TouchableOpacity>
                         ),
                         headerRight: () => (
-                            <TouchableOpacity className="w-auto h-auto bg-green-400 mr-5 flex justify-center items-center flex-row px-6 py-1.5 rounded-md" onPress={() => showModal()}>
-                                <Text>Season: </Text>
-                                {
-                                    isLoading ? (
-                                        <ActivityIndicator size="small" color="#00ff00" />
-                                    ) : (
-                                        <Text className="ml-3 font-bold text-base bg-orange-200 px-2 rounded-full">{seasonInfo}</Text>
-                                    )
-                                }
-                            </TouchableOpacity>
+                            <View className="flex flex-row justify-center items-center mr-5 gap-4">
+                                <TouchableOpacity className="w-auto h-auto bg-green-400 flex justify-center items-center flex-row px-6 py-1.5 rounded-md" onPress={() => showModal()}>
+                                    <Text>Season: </Text>
+                                    {
+                                        isLoading ? (
+                                            <ActivityIndicator size="small" color="#00ff00" />
+                                        ) : (
+                                            <Text className="ml-3 font-bold text-base bg-orange-200 px-2 rounded-full">{seasonInfo}</Text>
+                                        )
+                                    }
+                                </TouchableOpacity>
+                                <TouchableOpacity className="relative" onPress={() => navigation.navigate("Notifications")}>
+                                    <Ionicons name="notifications-outline" size={32} color="black" />
+                                    {
+                                        newStatusCount > 0 ? (
+                                            <Text className="absolute -top-1.5 -right-1 bg-[#a0ebb3] px-1.5 rounded-full">{newStatusCount}</Text>
+                                        ) : (
+                                            <></>
+                                        )
+                                    }
+                                    
+                                </TouchableOpacity>
+                            </View>
                         ),
                     })}
                 />
-                 <Stack.Screen 
+                <Stack.Screen 
                     name="Account" 
                     component={AccountScreen} 
                     options={({ navigation }) => ({
@@ -193,6 +238,20 @@ const AppNavigator = () => {
                                 }
                             </TouchableOpacity>
                         ),
+                    })}
+                />
+                <Stack.Screen 
+                    name="Notifications" 
+                    component={NotificationScreen} 
+                    options={({ navigation }) => ({
+                        headerShown: true,
+                        headerTitle: '',
+                        headerShadowVisible: true,
+                        headerLeft: () => (
+                            <TouchableOpacity className="px-2" onPress={() => navigation.goBack()}>
+                               <Ionicons name="arrow-back-outline" size={26} color="black" />
+                            </TouchableOpacity>
+                        )
                     })}
                 />
                 <Stack.Screen 

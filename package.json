@@ -17,7 +17,7 @@
     "@react-navigation/bottom-tabs": "^6.6.0",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/stack": "^6.3.29",
-    "expo": "~51.0.17",
+    "expo": "~51.0.39",
     "expo-dev-client": "~4.0.19",
     "expo-firebase": "^0.0.0-alpha.0",
     "expo-status-bar": "~1.12.1",
@@ -40,7 +40,10 @@
     "react-native-uuid": "^2.0.2",
     "react-native-vector-icons": "^9.2.0",
     "reanimated-color-picker": "^3.0.4",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "expo-notifications": "~0.28.19",
+    "expo-device": "~6.0.2",
+    "expo-constants": "~16.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

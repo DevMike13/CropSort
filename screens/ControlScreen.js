@@ -45,8 +45,7 @@ const ControlScreen = () => {
 
   const colorOptionsForCucumber = [
     { id: '1', label: 'Green', value: 'green' },
-    { id: '2', label: 'Light Green', value: 'light green' },
-    { id: '3', label: 'Dark Green', value: 'dark green' },
+    { id: '2', label: 'Yellow Green', value: 'yellow green' },
   ];
 
   const colorOptionsForChili = [
@@ -309,7 +308,7 @@ const ControlScreen = () => {
             <View className="flex flex-row items-center gap-5">
               <Text className="text-center font-semibold text-base">Basket 1</Text>
               <TouchableOpacity className="border-2 w-28 h-10 rounded-lg flex flex-row justify-around items-center" onPress={() => setShowModalOne(true)}>
-                <View className="h-[75%] w-7" style={{ backgroundColor: colorOne}}>
+                <View className="h-[75%] w-7" style={{ backgroundColor: colorOne === 'yellow green' ? 'yellowgreen' : colorOne }}>
 
                 </View>
                 <Image
@@ -336,7 +335,7 @@ const ControlScreen = () => {
             <View className="flex flex-row items-center gap-5 mt-2">
               <Text className="text-center font-semibold text-base">Basket 2</Text>
               <TouchableOpacity className="border-2 w-28 h-10 rounded-lg flex flex-row justify-around items-center" onPress={() => setShowModalTwo(true)}>
-                <View className="h-[75%] w-7" style={{ backgroundColor: colorTwo}}>
+                <View className="h-[75%] w-7" style={{ backgroundColor: colorTwo === 'yellow green' ? 'yellowgreen' : colorTwo }}>
 
                 </View>
                 <Image
@@ -363,7 +362,7 @@ const ControlScreen = () => {
             <View className="flex flex-row items-center gap-5 mt-2">
               <Text className="text-center font-semibold text-base">Basket 3</Text>
               <TouchableOpacity className="border-2 w-28 h-10 rounded-lg flex flex-row justify-around items-center" onPress={() => setShowModalThree(true)}>
-                <View className="h-[75%] w-7" style={{ backgroundColor: colorThree}}>
+                <View className="h-[75%] w-7" style={{ backgroundColor: colorThree === 'yellow green' ? 'yellowgreen' : colorThree }}>
 
                 </View>
                 <Image
