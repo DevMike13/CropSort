@@ -12,12 +12,13 @@ import DisclaimerScreen from '../screens/Disclaimer/DisclaimerScreen';
 import MainScreen from '../screens/Main/MainScreen';
 import TutorialScreen from '../screens/TutorialScreen';
 import ControlScreen from '../screens/ControlScreen';
-import AboutScreen from '../screens/AboutScreen';
+import AboutScreen from '../screens/About/AboutScreen';
 import MotherScreen from '../screens/Tabs/MotherScreen';
 import LoginScreen from '../screens/Auth/Login/LoginScreen';
 import AccountScreen from '../screens/Auth/Account/AccountScreen';
 import RegisterScreen from '../screens/Auth/Register/RegisterScreen';
 import NotificationScreen from '../screens/Notification/NotificationScreen';
+import TermsAndConditionScreen from '../screens/TermsAndCondition/TermsAndConditionScreen';
 
 import { Image, Text, TouchableOpacity, View, Button, ActivityIndicator  } from 'react-native';
 
@@ -161,8 +162,13 @@ const AppNavigator = () => {
         <NavigationContainer>
             <Stack.Navigator>
                 <Stack.Screen 
-                    name="Login" 
-                    component={LoginScreen} 
+                    name="Disclaimer" 
+                    component={DisclaimerScreen} 
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen 
+                    name="TermsAndConditions" 
+                    component={TermsAndConditionScreen} 
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen 
@@ -171,10 +177,11 @@ const AppNavigator = () => {
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen 
-                    name="Disclaimer" 
-                    component={DisclaimerScreen} 
+                    name="Login" 
+                    component={LoginScreen} 
                     options={{ headerShown: false }}
                 />
+                
                 <Stack.Screen 
                     name="Mother" 
                     component={MotherScreen} 
@@ -333,7 +340,7 @@ const AppNavigator = () => {
                     component={AboutScreen} 
                     options={({ navigation }) => ({
                         headerShown: true,
-                        headerTitle: '',
+                        headerTitle: 'About',
                         headerShadowVisible: true,
                         headerLeft: () => (
                             <TouchableOpacity className="w-8 h-8 px-2" onPress={() => navigation.goBack()}>

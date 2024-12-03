@@ -67,7 +67,7 @@ const AccountScreen = () => {
     try {
       if (userToApprove) {
         await firebase.firestore().collection('users').doc(userToApprove.id).update({
-          is_approved: true,
+          isApproved: true,
         });
 
         // Update the users state to reflect the approved status

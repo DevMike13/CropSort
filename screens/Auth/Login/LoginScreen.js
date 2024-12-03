@@ -17,7 +17,6 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   const { registerAndStorePushToken } = usePushNotification();
 
@@ -38,15 +37,6 @@ const LoginScreen = () => {
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   useEffect(() => {
     const checkLoggedIn = async () => {
       const user = await AsyncStorage.getItem('user');
@@ -147,18 +137,6 @@ const LoginScreen = () => {
     }
   };
   
-  if (isLoading) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <Image
-          source={require('../../../assets/logo.png')}
-          resizeMode='contain'
-          style={{ width: 150, height: '100%', alignSelf: 'center' }}
-        />
-      </SafeAreaView>
-    );
-  }
-
   return (
     <SafeAreaView style={styles.container}>
         <View style={styles.headerContainer}>
@@ -232,10 +210,10 @@ const LoginScreen = () => {
                 </View>
             </View>
             <View style={{ width: "70%" }}>
-                <Text style={{ textAlign: "center", alignItems: "center", fontFamily: FONT.regular }}>
+                {/* <Text style={{ textAlign: "center", alignItems: "center", fontFamily: FONT.regular }}>
                   By signing up you accept the{' '}
                   <Text style={{ textDecorationLine: 'underline', color: "#277df8", fontFamily: FONT.regular }} >Terms of Use</Text>
-              </Text>
+              </Text> */}
               <TouchableOpacity onPress={handleGoToDisclaimer} style={{ marginTop: 20}}>
                 <Text style={{ textAlign: "center", alignItems: "center", fontFamily: FONT.regular, textDecorationLine: 'underline', color: "#277df8" }}>
                     Read Desclaimer

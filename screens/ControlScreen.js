@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SelectList } from 'react-native-dropdown-select-list';
 import uuid from 'react-native-uuid';
+import Toast from 'react-native-toast-message';
 import firebase from '../firebase';
 import LottieView from 'lottie-react-native';
 import RadioGroup from 'react-native-radio-buttons-group';
@@ -236,14 +237,25 @@ const ControlScreen = () => {
   
 
   const toggleConveyor = () => {
-    const newState = converyorState === 'ON' ? 'OFF' : 'ON';
-    firebase.database().ref('conveyorState').set(newState);
+    if (colorOne === "black" || colorTwo === "black" || colorThree === "black") {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Error',
+        text2: 'One or more colors are black. Please select color.',
+      });
+      return;
+    }
+  
+    const newState = conveyorState === "ON" ? "OFF" : "ON";
+    firebase.database().ref("conveyorState").set(newState);
     setConveyorState(newState); // Update local state immediately
-
-    // CROP
-    firebase.database().ref('currentCrop').set(currentCrop);
+  
+    // Update current crop in Firebase and local state
+    firebase.database().ref("currentCrop").set(currentCrop);
     setCurrentCrop(currentCrop);
   };
+  
   
 
   // useEffect(() => {
@@ -596,6 +608,7 @@ const ControlScreen = () => {
             <Text className="text-center font-semibold">Reset</Text>
           </TouchableOpacity>
         </View>
+        <Toast position="top"/>
       </View>
   )
 }

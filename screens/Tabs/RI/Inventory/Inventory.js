@@ -34,8 +34,28 @@ const Inventory = () => {
   };
 
   const handlePriceChange = (price) => {
-    setPrice(price);
+    const numericValue = price.replace(/[^0-9.]/g, '');
+  
+    if ((numericValue.match(/\./g) || []).length <= 1) {
+      setPrice(numericValue);
+    }
   };
+
+  const handleQuantityChange = (input) => {
+    const numericValue = input.replace(/[^0-9]/g, ''); // Allow only numbers
+    setQuantity(numericValue ? parseInt(numericValue) : 1); // If input is empty, set to 0
+  };
+  const increaseQuantity = () => {
+    setQuantity(prevQuantity => prevQuantity + 1);
+  };
+
+  // Decrease quantity by 1 (ensure quantity doesn't go below 0)
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(prevQuantity => prevQuantity - 1);
+    }
+  };
+  
 
   const handleDateChange = (event, selected) => {
     setShowPicker(false); 
@@ -43,7 +63,7 @@ const Inventory = () => {
       setSelectedDate(selected);
     }
   };
-
+  
   const formattedDate = `${selectedDate.toLocaleString('en-US', { month: 'long' })}`;
 
   const crops = [
@@ -283,13 +303,30 @@ const Inventory = () => {
               <Text className="font-semibold text-base mr-8">
                 Quantity :
               </Text>
-              <NumericInput 
+              
+              {/* <NumericInput 
                 totalWidth={200}
                 value={quantity}
                 onChange={value => setQuantity(value)}
                 minValue={1}
                 totalHeight={50} 
-              />
+              /> */}
+              <View style={styles.inputContainer}>
+                <TouchableOpacity style={styles.button} onPress={decreaseQuantity}>
+                  <Text style={styles.buttonText}>-</Text>
+                </TouchableOpacity>
+
+                <TextInput
+                  style={styles.input}
+                  value={String(quantity)} // Convert to string for TextInput
+                  onChangeText={handleQuantityChange}
+                  keyboardType="numeric"
+                />
+
+                <TouchableOpacity style={styles.button} onPress={increaseQuantity}>
+                  <Text style={styles.buttonText}>+</Text>
+                </TouchableOpacity>
+              </View>
             </View>
             
             
@@ -399,13 +436,29 @@ const Inventory = () => {
             <Text className="font-semibold text-base mr-8">
               Quantity :
             </Text>
-            <NumericInput 
+            {/* <NumericInput 
               totalWidth={200}
               value={quantity}
               onChange={value => setQuantity(value)}
               minValue={1}
               totalHeight={50} 
-            />
+            /> */}
+            <View style={styles.inputContainer}>
+              <TouchableOpacity style={styles.button} onPress={decreaseQuantity}>
+                <Text style={styles.buttonText}>-</Text>
+              </TouchableOpacity>
+
+              <TextInput
+                style={styles.input}
+                value={String(quantity)} // Convert to string for TextInput
+                onChangeText={handleQuantityChange}
+                keyboardType="numeric"
+              />
+
+              <TouchableOpacity style={styles.button} onPress={increaseQuantity}>
+                <Text style={styles.buttonText}>+</Text>
+              </TouchableOpacity>
+            </View>
           </View>
           <View className="w-[90%] mt-5 flex flex-row items-center">
             <Text className="font-semibold text-base">

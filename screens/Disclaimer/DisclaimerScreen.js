@@ -1,5 +1,6 @@
 import { View, Text, Image, ImageBackground, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native'
-import React from 'react'
+import { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -8,13 +9,47 @@ import { FONT } from '../../constants/theme';
 
 const DisclaimerScreen = () => {
     const navigation = useNavigation();
+    const [isLoading, setIsLoading] = useState(true);
 
-    const handleGoToLogin = () => {
+    useEffect(() => {
+      const checkLoggedIn = async () => {
+        const user = await AsyncStorage.getItem('user');
+        if (user) {
+          navigation.reset({
+              index: 0,
+              routes: [{ name: 'Mother' }],
+          });
+        }
+      };
+      checkLoggedIn();
+    }, []);
+    
+    const handleGoToTerms = () => {
         navigation.reset({
             index: 0,
-            routes: [{ name: 'Login' }],
+            routes: [{ name: 'TermsAndConditions' }],
         });
     };
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 3000);
+  
+      return () => clearTimeout(timer);
+    }, []);
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Image
+          source={require('../../assets/logo.png')}
+          resizeMode='contain'
+          style={{ width: 150, height: '100%', alignSelf: 'center' }}
+        />
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -37,8 +72,8 @@ const DisclaimerScreen = () => {
             </Text>
         </ScrollView>
       </View>
-      <TouchableOpacity style={styles.agreeBtn} onPress={handleGoToLogin}>
-        <Text style={styles.btnText}>Agree</Text>
+      <TouchableOpacity style={styles.agreeBtn} onPress={handleGoToTerms}>
+        <Text style={styles.btnText}>Get Started</Text>
       </TouchableOpacity>
   
     </SafeAreaView>
