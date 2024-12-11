@@ -186,10 +186,10 @@ const LoginScreen = () => {
             <TouchableOpacity style={styles.loginBtn} onPress={handleLogin} disabled={loading}>
                 <Text style={styles.loginBtnText}>{loading ? 'Logging in...' : 'Login'}</Text>
             </TouchableOpacity>
-            <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "90%"}}>
+            {/* <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "90%"}}>
               <Text style={{ justifyContent: "center", alignItems: "center", fontFamily: FONT.regular}}>Forgot password? </Text>
               <TouchableOpacity style={{ justifyContent: "center", alignItems: "center"}} ><Text style={{ justifyContent: "center", alignItems: "center", textDecorationLine: "underline", color: "#277df8", fontFamily: FONT.regular }}>Reset it here</Text></TouchableOpacity>
-            </View>
+            </View> */}
             <View style={styles.divider}>
                 <View style={styles.dividerLineLeft}>
 

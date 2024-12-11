@@ -16,15 +16,16 @@ const screenWidth = Dimensions.get("window").width;
 const aggregateBundleData = (data) => {
   const aggregates = {};
   data.forEach((item) => {
-    const { color, crop, bundle_count } = item;
-    const key = `${color}_${crop}`;
+    const { season_no, crop, bundle_count } = item;
+    const key = `${season_no}_${crop}`;
     if (!aggregates[key]) {
-      aggregates[key] = { color, crop, total_bundle_count: 0 };
+      aggregates[key] = { season_no, crop, total_bundle_count: 0 };
     }
     aggregates[key].total_bundle_count += bundle_count;
   });
-  return Object.values(aggregates);
+  return Object.values(aggregates).sort((a, b) => a.season_no - b.season_no);
 };
+
 
 const Sorted = () => {
   const [aggregatedData, setAggregatedData] = useState([]);
@@ -37,21 +38,16 @@ const Sorted = () => {
   ];
 
   // Fetch data and store in state
-  const fetchData = async () => {
-    try {
-      const snapshot = await firebase
-        .firestore()
-        .collection("bundle_collection")
-        .get();
-      const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setAggregatedData(aggregateBundleData(data));
-    } catch (error) {
-      console.error("Error fetching bundle data:", error);
-    }
-  };
-
   useEffect(() => {
-    fetchData();
+    const unsubscribe = firebase
+      .firestore()
+      .collection("bundle_collection")
+      .onSnapshot((snapshot) => {
+        const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setAggregatedData(aggregateBundleData(data));
+      });
+
+    return () => unsubscribe(); // Cleanup subscription on unmount
   }, []);
 
   // Filtered data
@@ -66,22 +62,26 @@ const Sorted = () => {
     backgroundGradientFrom: "#ffffff",
     backgroundGradientTo: "#ffffff",
     strokeWidth: 2,
-    fillShadowGradient: "blue",
+    fillShadowGradient: "lightgreen",
     fillShadowGradientOpacity: 1,
-    decimalPlaces: 0,
-    color: (opacity = 1) => `rgba(230, 0, 0, ${opacity})`,
+    decimalPlaces: 0, // Number formatting
+    color: (opacity = 1) => `rgba(0, 128, 0, ${opacity})`,
     barRadius: 5,
+    borderColor: "black",
   };
+  
 
   const data = {
-    labels: filteredData.map((item) => `${item.color}`),
+    labels: filteredData.map((item) => `S${item.season_no}`),
     datasets: [
       {
         data: filteredData.map((item) => item.total_bundle_count),
-        colors: filteredData.map((item) => () => item.color),
+        colors: filteredData.map(() => () => "lightgreen"),
       },
     ],
   };
+
+  const chartWidth = Math.max(filteredData.length * 60, Dimensions.get("window").width - 16);
 
   return (
     <View className="w-full flex flex-col justify-center items-center py-10">
@@ -132,7 +132,7 @@ const Sorted = () => {
       <ScrollView horizontal={true}>
         <BarChart
           data={data}
-          width={screenWidth - 20}
+          width={chartWidth}
           height={350}
           fromZero={true}
           withCustomBarColorFromData={true}

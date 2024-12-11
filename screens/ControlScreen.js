@@ -247,7 +247,7 @@ const ControlScreen = () => {
       return;
     }
   
-    const newState = conveyorState === "ON" ? "OFF" : "ON";
+    const newState = converyorState === "ON" ? "OFF" : "ON";
     firebase.database().ref("conveyorState").set(newState);
     setConveyorState(newState); // Update local state immediately
   
