@@ -343,36 +343,9 @@ const ControlScreen = () => {
               </TouchableOpacity>
             </View>
 
-            {/* BASKET 2 */}
-            <View className="flex flex-row items-center gap-5 mt-2">
-              <Text className="text-center font-semibold text-base">Basket 2</Text>
-              <TouchableOpacity className="border-2 w-28 h-10 rounded-lg flex flex-row justify-around items-center" onPress={() => setShowModalTwo(true)}>
-                <View className="h-[75%] w-7" style={{ backgroundColor: colorTwo === 'yellow green' ? 'yellowgreen' : colorTwo }}>
-
-                </View>
-                <Image
-                  source={require('../assets/color-picker.png')}
-                  className="w-9 h-full"
-                  resizeMode='contain'
-                />
-              </TouchableOpacity>
-              <TouchableOpacity className="border-2 w-28 h-10 rounded-lg flex flex-row justify-around items-center" 
-                // onPress={() => setShowModalKgTwo(true)}
-              >
-                  <Text className="font-bold text-base">
-                    {kgTwo} KG
-                  </Text>
-                  <Image
-                    source={require('../assets/weight.png')}
-                    className="w-9 h-full"
-                    resizeMode='contain'
-                  />
-              </TouchableOpacity>
-            </View>
-
             {/* BASKET 3 */}
             <View className="flex flex-row items-center gap-5 mt-2">
-              <Text className="text-center font-semibold text-base">Basket 3</Text>
+              <Text className="text-center font-semibold text-base">Basket 2</Text>
               <TouchableOpacity className="border-2 w-28 h-10 rounded-lg flex flex-row justify-around items-center" onPress={() => setShowModalThree(true)}>
                 <View className="h-[75%] w-7" style={{ backgroundColor: colorThree === 'yellow green' ? 'yellowgreen' : colorThree }}>
 
@@ -388,6 +361,33 @@ const ControlScreen = () => {
               >
                   <Text className="font-bold text-base">
                     {kgThree} KG
+                  </Text>
+                  <Image
+                    source={require('../assets/weight.png')}
+                    className="w-9 h-full"
+                    resizeMode='contain'
+                  />
+              </TouchableOpacity>
+            </View>
+
+            {/* BASKET 2 */}
+            <View className="flex flex-row items-center gap-5 mt-2">
+              <Text className="text-center font-semibold text-base">Basket 3</Text>
+              <TouchableOpacity className="border-2 w-28 h-10 rounded-lg flex flex-row justify-around items-center" onPress={() => setShowModalTwo(true)}>
+                <View className="h-[75%] w-7" style={{ backgroundColor: colorTwo === 'yellow green' ? 'yellowgreen' : colorTwo }}>
+
+                </View>
+                <Image
+                  source={require('../assets/color-picker.png')}
+                  className="w-9 h-full"
+                  resizeMode='contain'
+                />
+              </TouchableOpacity>
+              <TouchableOpacity className="border-2 w-28 h-10 rounded-lg flex flex-row justify-around items-center" 
+                // onPress={() => setShowModalKgTwo(true)}
+              >
+                  <Text className="font-bold text-base">
+                    {kgTwo} KG
                   </Text>
                   <Image
                     source={require('../assets/weight.png')}
